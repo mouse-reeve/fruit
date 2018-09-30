@@ -40,35 +40,31 @@ function draw() {
     var perturbation_x = 25;
     var points = Math.round(random(3, 10));
 
-    vertices = [];
+    outline = [];
     var radii = [];
-    var idx = 0;
-    for (var a = HALF_PI + (PI / 20); a < 3 * HALF_PI - (PI / 20); a += PI / points) {
-        if (a < 3 * HALF_PI) {
-            radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
-            radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
-            radii.push([radius_x, radius_y]);
-        } else {
-            var rs = radii.slice(-1 * (points - idx))[0];
-            radii.push(rs);
-            radius_x = rs[0];
-            radius_y = rs[1];
-        }
+    for (var a = HALF_PI + (PI / 20); a < 3 * HALF_PI; a += PI / points) {
+        radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
+        radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
+        radii.push([radius_x, radius_y]);
+
         var sx = x + cos(a) * radius_x;
         var sy = y - sin(a) * radius_y;
-        vertices.push([sx, sy]);
-        idx++;
+        outline.push([sx, sy]);
     }
 
-    // then go back up the same way
-    var reversed = vertices.map(function(v) {
-        return [2 * x - v[0], v[1]];
-    });
-    // reverse the order so it draws correctly around the circle
-    reversed.reverse();
+    var radii_cont = [];
+    var idx = 0;
+    for (var a = HALF_PI - (PI / 20); a > -1 * HALF_PI; a -= PI / points) {
+        r = radii[idx];
+        radius_x = r[0];
+        radius_y = r[1];
+        radii_cont.push(r);
 
-    var all_vertices = vertices;
-    all_vertices = all_vertices.concat(reversed);
+        var sx = x + cos(a) * radius_x;
+        var sy = y - sin(a) * radius_y;
+        outline.splice(points, 0, [sx, sy]);
+        idx++;
+    }
 
     push();
     stroke(black);
@@ -77,10 +73,9 @@ function draw() {
     noFill();
     vertex(x, y - radius_base);
 
-    for (var v = 0; v < all_vertices.length; v++) {
-        vertex(all_vertices[v][0], all_vertices[v][1]);
+    for (var v = 0; v < outline.length; v++) {
+        vertex(outline[v][0], outline[v][1]);
     }
     endShape(CLOSE);
     pop();
 }
-
