@@ -41,12 +41,23 @@ function draw() {
     var points = Math.round(random(3, 10));
 
     vertices = [];
-    for (var a = HALF_PI + (PI / 20); a < 3 * HALF_PI; a += PI / points) {
-        radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
-        radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
+    var radii = [];
+    var idx = 0;
+    for (var a = HALF_PI + (PI / 20); a < 3 * HALF_PI - (PI / 20); a += PI / points) {
+        if (a < 3 * HALF_PI) {
+            radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
+            radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
+            radii.push([radius_x, radius_y]);
+        } else {
+            var rs = radii.slice(-1 * (points - idx))[0];
+            radii.push(rs);
+            radius_x = rs[0];
+            radius_y = rs[1];
+        }
         var sx = x + cos(a) * radius_x;
         var sy = y - sin(a) * radius_y;
         vertices.push([sx, sy]);
+        idx++;
     }
 
     // then go back up the same way
