@@ -44,15 +44,14 @@ function draw() {
     for (var a = HALF_PI + (PI / 20); a < 3 * HALF_PI; a += PI / points) {
         radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
-        vertices.push({
-            x: x + cos(a) * radius_x,
-            y: y - sin(a) * radius_y,
-        });
+        var sx = x + cos(a) * radius_x;
+        var sy = y - sin(a) * radius_y;
+        vertices.push([sx, sy]);
     }
 
     // then go back up the same way
     var reversed = vertices.map(function(v) {
-        return {x: 2 * x - v.x, y: v.y};
+        return [2 * x - v[0], v[1]];
     });
     // reverse the order so it draws correctly around the circle
     reversed.reverse();
@@ -68,7 +67,7 @@ function draw() {
     vertex(x, y - radius_base);
 
     for (var v = 0; v < all_vertices.length; v++) {
-        vertex(all_vertices[v].x, all_vertices[v].y);
+        vertex(all_vertices[v][0], all_vertices[v][1]);
     }
     endShape(CLOSE);
     pop();
