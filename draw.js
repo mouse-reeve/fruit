@@ -33,45 +33,79 @@ function draw() {
     x = 0;
     y = 0;
 
+    var core_data = {
+        'side_a': [],
+        'side_b': [],
+        'all_points': [],
+        'bezier_points': [],
+    };
+
     var radius_y = radius_base;
     var radius_x = radius_base;
     var perturbation_y = 10;
     var perturbation_x = 25;
-    var points = Math.round(random(4, 7));
-    var control_radius = 120 / points;
+    var point_count = Math.round(random(4, 7));
+    var control_radius = 120 / point_count;
+    var angle = PI / point_count;
 
-    var radii = [];
-    var angle = PI / points;
-    var base_shape = [];
+    // the first, non-bezier, vertex point
+    core_data.side_a.push({x: x, y: y - radius_y, a: HALF_PI, type: 'anchor'});
+    // create the first side
     for (var a = HALF_PI; a < 3 * HALF_PI; a += angle) {
         var sx1 = x + cos(a) * radius_x;
         var sy1 = y - sin(a) * radius_y;
 
         var cx1 = sx1 + cos(a + HALF_PI) * control_radius;
         var cy1 = sy1 - sin(a + HALF_PI) * control_radius;
+        core_data.side_a.push({x: cx1, y: cy1, type: 'control'});
 
         radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
-        radii.push(radius_y);
-        radii.push(radius_x);
 
         var sx2 = x + cos(a + angle) * radius_x;
         var sy2 = y - sin(a + angle) * radius_y;
 
         var cx2 = sx2 - cos(a + angle + HALF_PI) * control_radius;
         var cy2 = sy2 + sin(a + angle + HALF_PI) * control_radius;
-
-        var base_shape_point = [
-            cx1, cy1,
-            cx2, cy2,
-            sx2, sy2
-        ];
-        // stash this so I can make concentric shapes
-        base_shape_point.radius = [radius_x, radius_y];
-        base_shape_point.angle = a;
-        base_shape.push(base_shape_point);
+        core_data.side_a.push({x: cx2, y: cy2, type: 'control'});
+        core_data.side_a.push({x: sx2, y: sy2, a: a + angle, type: 'anchor'});
     }
+    core_data.all_points = core_data.side_a.slice(0);
 
+    // add center two control points
+    core_data.all_points.push({
+        type: 'control',
+        x: x + cos(TWO_PI) * control_radius,
+        y: y - sin(TWO_PI) * control_radius,
+    });
+    core_data.all_points.push({
+        type: 'control',
+        x: x - cos(0) * control_radius,
+        y: y + sin(0) * control_radius,
+    });
+
+    // mirror side a
+    var reversed = core_data.side_a.map(function (point) {
+        return {
+            x: 2*x - point.x,
+            y: point.y
+        };
+    });
+    reversed.reverse();
+    core_data.side_b = reversed;
+    core_data.all_points = core_data.all_points.concat(reversed);
+    core_data.all_points.push({x: x, y: y - radius_y, a: HALF_PI, type: 'anchor'});
+    // cool
+    fill(black);
+    ellipse(250 - cos(PI) * radius_x, 150 + sin(PI) * radius_y, 5, 5);
+    ellipse(250 - cos(HALF_PI) * radius_x, 150 + sin(HALF_PI) * radius_y, 5, 5);
+    noFill();
+
+
+    translate(250, 150);
+
+    draw_shape(core_data.all_points);
+    /*
     noStroke();
     translate(250, 150);
     // outside
@@ -119,24 +153,18 @@ function draw() {
     fill('#500');
     draw_shape(base_shape);
     pop();
+    */
 }
 
-function draw_shape(vertices, x_scale_factor) {
-    x_scale_factor = x_scale_factor || -1;
-    for (var i = 0; i < 2; i++) {
-        beginShape();
-        vertex(x, y - radius_base);
-
-        for (var v = 0; v < vertices.length; v++) {
-            bezierVertex(...vertices[v]);
-            //ellipse(vertices[v][4], vertices[v][5], 5, 5);
-            /*push();
-            fill(black);
-            ellipse(vertices[v][0], vertices[v][1], 2, 2);
-            ellipse(vertices[v][2], vertices[v][3], 2, 2);
-            pop();*/
-        }
-        endShape(CLOSE);
-        scale(x_scale_factor, 1);
+function draw_shape(points) {
+    beginShape();
+    vertex(points[0].x, points[0].y);
+    for (var v = 1; v < points.length - 3; v+=3) {
+        bezierVertex(
+            points[v].x, points[v].y,
+            points[v + 1].x, points[v + 1].y,
+            points[v + 2].x, points[v + 2].y
+        );
     }
+    endShape(CLOSE);
 }
