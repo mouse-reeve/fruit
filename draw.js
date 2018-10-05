@@ -75,13 +75,13 @@ function draw() {
     // add center two control points
     core_data.all_points.push({
         type: 'control',
-        x: x + cos(TWO_PI) * control_radius,
-        y: y - sin(TWO_PI) * control_radius,
+        x: x - cos(HALF_PI) * radius_x,
+        y: y + sin(HALF_PI) * radius_y,
     });
     core_data.all_points.push({
         type: 'control',
-        x: x - cos(0) * control_radius,
-        y: y + sin(0) * control_radius,
+        x: x - cos(HALF_PI) * radius_x,
+        y: y + sin(HALF_PI) * radius_y,
     });
 
     // mirror side a
@@ -96,10 +96,6 @@ function draw() {
     core_data.all_points = core_data.all_points.concat(reversed);
     core_data.all_points.push({x: x, y: y - radius_y, a: HALF_PI, type: 'anchor'});
     // cool
-    fill(black);
-    ellipse(250 - cos(PI) * radius_x, 150 + sin(PI) * radius_y, 5, 5);
-    ellipse(250 - cos(HALF_PI) * radius_x, 150 + sin(HALF_PI) * radius_y, 5, 5);
-    noFill();
 
 
     translate(250, 150);
