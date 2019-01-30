@@ -68,6 +68,41 @@ function draw() {
     // cool
 
     draw_whole(shape, 250, 150);
+    draw_cut(shape, 250, 450);
+}
+
+function draw_cut(shape, x, y) {
+    // ------------------- whole ----------------------- \\
+    push();
+    translate(x, y);
+    strokeWeight(5);
+    stroke(black);
+
+    // outside
+    push();
+    beginShape();
+    fill('#f00');
+    for (var v = 0; v < shape.length; v++) {
+        curveVertex(shape[v].x, shape[v].y);
+    }
+    endShape(CLOSE);
+    pop();
+    push();
+    beginShape();
+    fill('#f80');
+    for (var v = 0; v < shape.length; v++) {
+        var sx = v < shape.length / 2 || v >= shape.length - 2 ? shape[v].x : shape[v].x * 0.9;
+        curveVertex(sx, shape[v].y);
+    }
+    endShape(CLOSE);
+    pop();
+
+    // pit
+    push();
+
+    pop();
+
+    pop();
 }
 
 function draw_whole(shape, x, y) {
