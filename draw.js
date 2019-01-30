@@ -33,7 +33,7 @@ function draw() {
     x = 0;
     y = 0;
 
-    var outside = [];
+    var base_shape = [];
 
     var radius_y = radius_base;
     var radius_x = radius_base;
@@ -45,32 +45,46 @@ function draw() {
 
     var start = {x: x, y: y - radius_y};
     // idk why the first point goes in twice but it does?
-    outside.push(start);
-    outside.push(start);
+    base_shape.push(start);
+    base_shape.push(start);
     // create the first side
     for (var a = HALF_PI; a < 3 * HALF_PI; a += angle) {
         radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
         var sx2 = x + cos(a + angle) * radius_x;
         var sy2 = y - sin(a + angle) * radius_y;
-        outside.push({x: sx2, y: sy2});
+        base_shape.push({x: sx2, y: sy2});
     }
 
     // mirror side a
-    var reversed = outside.map(function (point) {
+    var reversed = base_shape.map(function (point) {
         return {
             x: 2*x - point.x,
             y: point.y
         };
     });
     reversed.reverse();
-    outside = outside.concat(reversed.slice(1));
+    base_shape = base_shape.concat(reversed.slice(1));
+    var outside = base_shape.slice(0);
+
+    // add top dip
+    var top_points = [0, 1, outside.length - 2, outside.length - 1];
+    var y_offset = random(0, 0.2);
+    for (var i = 0; i < top_points.length; i++) {
+        outside[top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (radius_y * y_offset)};
+    }
 
     // inside
     var inside = [];
     for (var v = 0; v < outside.length; v++) {
         var sx = v < outside.length / 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * 0.9;
         inside.push({x: sx, y: outside[v].y});
+    }
+
+    // add inside top dip
+    y_offset *= 2;
+    for (var i = 0; i < top_points.length; i++) {
+        inside[top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (radius_y * y_offset)};
     }
 
     // core
@@ -83,20 +97,26 @@ function draw() {
         core.push({x: sx, y: sy});
     }
 
+    // add core top dip
+    y_offset *= 1.2;
+    for (var i = 0; i < top_points.length; i++) {
+        core[top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (radius_y * y_offset)};
+    }
+
     // pit
     var pit_size = random(0.3, 0.7);
-    var pit = [{x: outside[0].x, y: outside[0].y * pit_size * 1.1}];
-    for (var v = 1; v < outside.length; v+=2) {
-        var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * pit_size;
-        var sy = v < 2 || v >= outside.length - 2 ? outside[v].y * (pit_size * 1.1) : outside[v].y * pit_size;
-        sx = v < outside.length / 2 || v >= outside.length - 2 ? sx : sx * 0.9;
+    var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
+    for (var v = 1; v < base_shape.length; v+=2) {
+        var sx = v < 2 || v >= base_shape.length - 2 ? base_shape[v].x : base_shape[v].x * pit_size;
+        var sy = v < 2 || v >= base_shape.length - 2 ? base_shape[v].y * (pit_size) : base_shape[v].y * pit_size * 0.8;
+        sx = v < base_shape.length / 2 || v >= base_shape.length - 2 ? sx : sx * 0.9;
         pit.push({x: sx, y: sy});
     }
 
     fruit = {outside, inside, core, pit}
     // cool
 
-    draw_whole(fruit, 250, 150);
+    draw_whole(fruit, 250, 170);
     draw_cut(fruit, 250, 450);
 }
 
