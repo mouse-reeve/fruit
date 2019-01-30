@@ -99,7 +99,31 @@ function draw_cut(shape, x, y) {
 
     // pit
     push();
+    noStroke();
+    fill('#f60');
+    var pit_size = 0.7;
+    beginShape();
+    for (var v = 0; v < shape.length; v++) {
+        var sx = v < 2 || v >= shape.length - 2 ? shape[v].x : shape[v].x * pit_size;
+        var sy = v < 2 || v >= shape.length - 2 || v == Math.floor(shape.length / 2) ? shape[v].y * 0.99 : shape[v].y * pit_size;
+        sx = v < shape.length / 2 || v >= shape.length - 2 ? sx : sx * 0.9;
+        curveVertex(sx, sy);
+    }
+    endShape(CLOSE);
+    pop();
 
+    push();
+    fill('#ff0');
+    var pit_size = random(0.3, 0.7);
+    beginShape();
+    curveVertex(shape[0].x, shape[0].y * pit_size * 1.1);
+    for (var v = 1; v < shape.length; v+=2) {
+        var sx = v < 2 || v >= shape.length - 2 ? shape[v].x : shape[v].x * pit_size;
+        var sy = v < 2 || v >= shape.length - 2 ? shape[v].y * (pit_size * 1.1) : shape[v].y * pit_size;
+        sx = v < shape.length / 2 || v >= shape.length - 2 ? sx : sx * 0.9;
+        curveVertex(sx, sy);
+    }
+    endShape(CLOSE);
     pop();
 
     pop();
