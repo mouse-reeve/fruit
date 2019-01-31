@@ -52,7 +52,7 @@ function draw_from_data(fruit, x, y) {
         if (fruit.strokeWeight) {
             strokeWeight(fruit.strokeWeight);
         } else {
-            strokeWeight(5);
+            strokeWeight(4);
         }
     }
     if (!!fruit.fill) {

@@ -27,9 +27,10 @@ function create_fruit() {
 
     // mirror side a
     var reversed = base_shape.map(function (point) {
+        var jitter = random(radius_base / -20, radius_base / 20);
         return {
-            x: 2*x - point.x,
-            y: point.y
+            x: 2 * x - point.x + jitter,
+            y: point.y + jitter,
         };
     });
     reversed.reverse();
