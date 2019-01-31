@@ -46,6 +46,7 @@ function create_fruit() {
     var core = get_core(outside, params);
     var pit = get_pit(base_shape, params);
     var seeds = get_seeds(base_shape, params);
+    outside = [outside, get_highlight(outside, '#f99')];
     return {outside, inside, core, seeds};
 }
 
@@ -60,6 +61,24 @@ function get_outside(base_shape, params) {
     outside.stroke = black;
     outside.fill = '#f00';
     return outside;
+}
+
+function get_highlight(shape, color) {
+    var highlight = [];
+
+    var start = 2;
+    var end = Math.round(shape.length / 3);
+    end = end <= 3 ? 4 : end;
+    for (var v = start; v < end; v++) {
+        highlight.push({x: shape[v].x * 0.9, y: shape[v].y * 0.9});
+    }
+    for (var v = end - 2; v >= start; v--) {
+        console.log(v);
+        highlight.push({x: shape[v].x * 0.7, y: shape[v].y * 0.7});
+    }
+    highlight.fill = color;
+
+    return highlight;
 }
 
 function get_inside(outside, params) {
