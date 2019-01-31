@@ -1,0 +1,116 @@
+function create_fruit() {
+    x = 0;
+    y = 0;
+
+    var base_shape = [];
+
+    var radius_y = radius_base;
+    var radius_x = radius_base;
+    var perturbation_y = 10;
+    var perturbation_x = 25;
+    var point_count = Math.round(random(6, 8));
+    var control_radius = 120 / point_count;
+    var angle = PI / point_count;
+
+    var start = {x: x, y: y - radius_y};
+    // idk why the first point goes in twice but it does?
+    base_shape.push(start);
+    base_shape.push(start);
+    // create the first side
+    for (var a = HALF_PI; a < 3 * HALF_PI; a += angle) {
+        radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
+        radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
+        var sx2 = x + cos(a + angle) * radius_x;
+        var sy2 = y - sin(a + angle) * radius_y;
+        base_shape.push({x: sx2, y: sy2});
+    }
+
+    // mirror side a
+    var reversed = base_shape.map(function (point) {
+        return {
+            x: 2*x - point.x,
+            y: point.y
+        };
+    });
+    reversed.reverse();
+    base_shape = base_shape.concat(reversed.slice(1));
+
+    var params = {
+        y_offset: random(0, 0.2),
+        radius_y: radius_y,
+        top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
+    };
+
+    var outside = get_outside(base_shape, params);
+    outside.fill = '#f00';
+    outside.stroke = '#000';
+    var inside = get_inside(outside, params);
+    inside.fill = '#f80';
+    inside.stroke = '#000';
+    var core = get_core(outside, params);
+    core.fill = '#f60';
+    var pit = get_pit(base_shape, params);
+    pit.fill = '#ff0';
+    pit.stroke = '#000';
+    return {outside, inside, core, pit};
+}
+
+function get_outside(base_shape, params) {
+    var outside = base_shape.slice(0);
+
+    // add top dip
+    for (var i = 0; i < params.top_points.length; i++) {
+        outside[params.top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (params.radius_y * params.y_offset)};
+    }
+    return outside;
+}
+
+function get_inside(outside, params) {
+    // inside
+    var inside = [];
+    for (var v = 0; v < outside.length; v++) {
+        var sx = v < outside.length / 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * 0.9;
+        inside.push({x: sx, y: outside[v].y});
+    }
+
+    // add inside top dip
+    var y_offset = params.y_offset * 1.5;
+    for (var i = 0; i < params.top_points.length; i++) {
+        inside[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * y_offset)};
+    }
+    return inside;
+}
+
+function get_core(outside, params) {
+    // core
+    var core = [];
+    var core_size = 0.7;
+    for (var v = 0; v < outside.length; v++) {
+        var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size;
+        var sy = v < 2 || v >= outside.length - 2 || v == Math.floor(outside.length / 2) ? outside[v].y * 0.99 : outside[v].y * core_size;
+        sx = v < outside.length / 2 || v >= outside.length - 2 ? sx : sx * 0.9;
+        core.push({x: sx, y: sy});
+    }
+
+    // add core top dip
+    var y_offset = params.y_offset * 2.2;
+    for (var i = 0; i < params.top_points.length; i++) {
+        core[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * y_offset)};
+    }
+    return core;
+}
+
+function get_pit(base_shape, params) {
+    // pit
+    var pit_size = random(0.3, 0.7);
+    var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
+    for (var v = 1; v < base_shape.length; v+=2) {
+        var sx = v < 2 || v >= base_shape.length - 2 ? base_shape[v].x : base_shape[v].x * pit_size;
+        var sy = v < 2 || v >= base_shape.length - 2 ? base_shape[v].y * (pit_size) : base_shape[v].y * pit_size * 0.8;
+        sx = v < base_shape.length / 2 || v >= base_shape.length - 2 ? sx : sx * 0.9;
+        pit.push({x: sx, y: sy});
+    }
+
+    return pit;
+}
+// cool
