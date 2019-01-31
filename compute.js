@@ -43,11 +43,16 @@ function create_fruit() {
 
     var outside = get_outside(base_shape, params);
     var inside = get_inside(outside, params);
+    var stem = get_stem(inside);
     var core = get_core(outside, params);
     var pit = get_pit(base_shape, params);
+    pit = [pit, get_highlight(pit, '#ffe')];
     var seeds = get_seeds(base_shape, params);
     outside = [outside, get_highlight(outside, '#f99')];
-    return {outside, inside, core, seeds};
+
+    var whole = [stem, outside];
+    var cut = [outside, inside, core, seeds, stem];
+    return {cut, whole};
 }
 
 function get_outside(base_shape, params) {
@@ -61,6 +66,26 @@ function get_outside(base_shape, params) {
     outside.stroke = black;
     outside.fill = '#f00';
     return outside;
+}
+
+function get_stem(inside) {
+    var origin = inside[0]
+    var stem_length = 50;
+    var stem = [
+        {x: origin.x - 3, y: origin.y},
+        {x: origin.x - 3, y: origin.y},
+        {x: origin.x - 7, y: origin.y - stem_length/2},
+        {x: origin.x - 2, y: origin.y - stem_length},
+        {x: origin.x + 7, y: origin.y - stem_length},
+        {x: origin.x + 2, y: origin.y - stem_length/2},
+        {x: origin.x + 3, y: origin.y - 2},
+        {x: origin.x + 3, y: origin.y - 2},
+    ];
+
+    stem.fill = '#ad6a5c';
+    stem.stroke = black;
+    stem.strokeWeight = 3;
+    return stem;
 }
 
 function get_highlight(shape, color) {

@@ -31,16 +31,8 @@ var radius_base = 100;
 function draw() {
     var fruit = create_fruit();
 
-    draw_from_data(fruit.outside, 250, 150);
-    draw_from_data(fruit.outside, 250, 450);
-    draw_from_data(fruit.inside, 250, 450);
-    draw_from_data(fruit.core, 250, 450);
-    if (fruit.pit) {
-        draw_from_data(fruit.pit, 250, 450);
-    }
-    if (fruit.seeds) {
-        draw_from_data(fruit.seeds, 250, 450);
-    }
+    draw_from_data(fruit.whole, 250, 150);
+    draw_from_data(fruit.cut, 250, 450);
 }
 
 function draw_from_data(fruit, x, y) {
