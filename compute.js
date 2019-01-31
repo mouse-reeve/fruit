@@ -36,23 +36,17 @@ function create_fruit() {
     base_shape = base_shape.concat(reversed.slice(1));
 
     var params = {
-        y_offset: random(0, 0.2),
+        divot_offset: random(0, 0.2),
         radius_y: radius_y,
         top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
     };
 
     var outside = get_outside(base_shape, params);
-    outside.fill = '#f00';
-    outside.stroke = '#000';
     var inside = get_inside(outside, params);
-    inside.fill = '#f80';
-    inside.stroke = '#000';
     var core = get_core(outside, params);
-    core.fill = '#f60';
     var pit = get_pit(base_shape, params);
-    pit.fill = '#ff0';
-    pit.stroke = '#000';
-    return {outside, inside, core, pit};
+    var seeds = get_seeds(base_shape, params);
+    return {outside, inside, core, seeds};
 }
 
 function get_outside(base_shape, params) {
@@ -60,8 +54,11 @@ function get_outside(base_shape, params) {
 
     // add top dip
     for (var i = 0; i < params.top_points.length; i++) {
-        outside[params.top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (params.radius_y * params.y_offset)};
+        outside[params.top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (params.radius_y * params.divot_offset)};
     }
+
+    outside.stroke = black;
+    outside.fill = '#f00';
     return outside;
 }
 
@@ -74,10 +71,13 @@ function get_inside(outside, params) {
     }
 
     // add inside top dip
-    var y_offset = params.y_offset * 1.5;
+    var divot_offset = params.divot_offset * 1.5;
     for (var i = 0; i < params.top_points.length; i++) {
-        inside[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * y_offset)};
+        inside[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
     }
+
+    inside.stroke = black;
+    inside.fill = '#f80';
     return inside;
 }
 
@@ -93,12 +93,82 @@ function get_core(outside, params) {
     }
 
     // add core top dip
-    var y_offset = params.y_offset * 2.2;
+    var divot_offset = params.divot_offset * 2.2;
     for (var i = 0; i < params.top_points.length; i++) {
-        core[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * y_offset)};
+        core[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
     }
+
+    core.fill = '#f60';
+
     return core;
 }
+
+function get_seeds(outside, params) {
+    var core = [];
+    var core_size = 0.2;
+    for (var v = 0; v < outside.length; v++) {
+        var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size * 1.2;
+        var sy = v < 2 || v >= outside.length - 2 || v == Math.floor(outside.length / 2) ? outside[v].y * 0.8 : outside[v].y * core_size;
+        sx = v < outside.length / 2 || v >= outside.length - 2 ? sx : sx * 0.8;
+        core.push({x: sx, y: sy});
+    }
+
+    // add core top dip
+    var divot_offset = params.divot_offset;
+    for (var i = 0; i < params.top_points.length; i++) {
+        core[params.top_points[i]] = {x: core[0].x, y: core[0].y + (params.radius_y * divot_offset)};
+    }
+
+    core.fill = '#f50';
+
+    var seeds = [];
+    for (var v = 2; v < outside.length - 3; v++) {
+        if (v == Math.floor(outside.length / 2) - 1) {
+            v += 1;
+        }
+        var seed = [];
+        var p1 = outside[v];
+        var p2 = outside[v + 1];
+        var mx = ((p1.x + p2.x) / 2) * 0.2;
+        var my = ((p1.y + p2.y) / 2) * 0.2;
+        var radius = get_distance({x: 0, y: 0}, outside[3]) * 0.4;
+        var theta = get_corner_angle(outside[0], {x: 0, y: 0}, p2);
+        if (v < (outside.length / 2) - 1) {
+            theta = (3 * PI / 2) - theta;
+        } else {
+            theta = (3 * PI / 2) + theta;
+        }
+        seed.push({x: mx, y: my});
+        seed.push({x: mx, y: my});
+        seed.push({x: radius * cos(theta), y: radius * sin(theta)});
+        seed.push({x: radius * cos(theta + (PI / 12)), y: radius * sin(theta + (PI / 12))});
+        seed.fill = '#f30';
+        seed.stroke = '#a20';
+        seed.strokeWeight = 2;
+        seeds.push(seed);
+    }
+    return [core, seeds];
+}
+
+function get_corner_angle(p1, p2, p3) {
+    /*      p1
+    /       /|
+    /   b /  | a
+    /   /A___|
+    / p2   c  p3
+    */
+
+    var a = get_distance(p3, p1);
+    var b = get_distance(p1, p2);
+    var c = get_distance(p2, p3);
+
+    return Math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c));
+}
+
+function get_distance(p1, p2) {
+    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+}
+
 
 function get_pit(base_shape, params) {
     // pit
@@ -111,6 +181,8 @@ function get_pit(base_shape, params) {
         pit.push({x: sx, y: sy});
     }
 
+    pit.stroke = black;
+    pit.fill = '#ff0';
     return pit;
 }
 // cool

@@ -35,26 +35,35 @@ function draw() {
     draw_from_data(fruit.outside, 250, 450);
     draw_from_data(fruit.inside, 250, 450);
     draw_from_data(fruit.core, 250, 450);
-    draw_from_data(fruit.pit, 250, 450);
+    if (fruit.pit) {
+        draw_from_data(fruit.pit, 250, 450);
+    }
+    if (fruit.seeds) {
+        draw_from_data(fruit.seeds, 250, 450);
+    }
 }
 
 function draw_from_data(fruit, x, y) {
     if (Array.isArray(fruit[0])) {
         for (var f = 0; f < fruit.length; f++) {
-            draw_from_data(f, x, y);
+            draw_from_data(fruit[f], x, y);
         }
         return;
     }
 
     push();
     translate(x, y);
-    strokeWeight(5);
     if (!fruit.stroke) {
         noStroke();
     } else {
         stroke(fruit.stroke);
+        if (fruit.strokeWeight) {
+            strokeWeight(fruit.strokeWeight);
+        } else {
+            strokeWeight(5);
+        }
     }
-    if (fruit.fill) {
+    if (!!fruit.fill) {
         fill(fruit.fill);
     }
 
