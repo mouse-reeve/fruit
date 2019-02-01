@@ -10,7 +10,7 @@ function setup() {
     console.log(seed);
 
     var container = document.getElementById('fruit');
-    var canvas = createCanvas(500, 600);
+    var canvas = createCanvas(580, 680);
     canvas.parent(container);
 
     black = color(0);
@@ -20,9 +20,15 @@ function setup() {
 
     // 1px black outline around the canvas
     push();
+    noStroke();
+    fill(color(15, 94, 92));
+    rect(0, 0, width - 1, height - 1);
+    push();
     pop();
-    stroke(black);
-    rect(0, 0, width - 1, height -1);
+
+    stroke(color(15, 94, 30));
+    rect(40, 40, width - 82, height - 82);
+    pop();
 
     noLoop();
 }
@@ -31,8 +37,8 @@ var radius_base = 100;
 function draw() {
     var fruit = create_fruit();
 
-    draw_from_data(fruit.whole, 250, 150);
-    draw_from_data(fruit.cut, 250, 450);
+    draw_from_data(fruit.whole, 290, 200);
+    draw_from_data(fruit.cut, 290, 490);
 }
 
 function draw_from_data(fruit, x, y) {
