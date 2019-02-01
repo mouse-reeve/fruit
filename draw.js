@@ -5,12 +5,23 @@ var black;
 var white;
 
 function setup() {
-    var seed = Math.floor(Math.random() * 10000);
+    var param_string = window.location.search.substr(1).split('&');
+    var params = {};
+    for (var i = 0; i < param_string.length; i++) {
+        var pair = param_string[i].split('=');
+        if (parseInt(pair[1]) == pair[1]) {
+            radius = 0;
+            pair[1] = parseInt(pair[1]);
+        }
+        params[pair[0]] = pair[1];
+    }
+    var seed = params.seed || Math.floor(Math.random() * 10000);
     randomSeed(seed);
     console.log(seed);
+    history.replaceState({}, '', 'index.html?seed=' + seed);
 
     var container = document.getElementById('fruit');
-    var canvas = createCanvas(580, 680);
+    var canvas = createCanvas(500, 680);
     canvas.parent(container);
 
     black = color(0);
@@ -26,6 +37,7 @@ function setup() {
     push();
     pop();
 
+    strokeWeight(2);
     stroke(color(15, 94, 30));
     rect(40, 40, width - 82, height - 82);
     pop();
@@ -33,12 +45,11 @@ function setup() {
     noLoop();
 }
 
-var radius_base = 100;
 function draw() {
     var fruit = create_fruit();
 
-    draw_from_data(fruit.whole, 290, 200);
-    draw_from_data(fruit.cut, 290, 490);
+    draw_from_data(fruit.whole, 250, 200);
+    draw_from_data(fruit.cut, 250, 490);
 }
 
 function draw_from_data(fruit, x, y) {

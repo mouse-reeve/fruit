@@ -4,10 +4,11 @@ function create_fruit() {
 
     var base_shape = [];
 
+    var radius_base = random(50, 120);
     var radius_y = radius_base;
     var radius_x = radius_base;
-    var perturbation_y = 10;
-    var perturbation_x = 25;
+    var perturbation_y = radius_base / 10;
+    var perturbation_x = radius_base / 4;
     var point_count = Math.round(random(6, 8));
     var control_radius = 120 / point_count;
     var angle = PI / point_count;
@@ -17,8 +18,12 @@ function create_fruit() {
     base_shape.push(start);
     base_shape.push(start);
     // create the first side
+    var min_radius;
     for (var a = HALF_PI; a < 3 * HALF_PI; a += angle) {
         radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
+        if (!min_radius || radius_x < min_radius) {
+            min_radius = radius_x;
+        }
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
         var sx2 = x + cos(a + angle) * radius_x;
         var sy2 = y - sin(a + angle) * radius_y;
@@ -86,7 +91,8 @@ function create_fruit() {
     outside = [outside, get_highlight(outside)];
 
     var whole = [stem, outside];
-    var cut = [outside, inside, core, random([seeds, pit]), stem];
+    var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
+    var cut = [outside, inside, core, center, stem];
     return {cut, whole};
 }
 
