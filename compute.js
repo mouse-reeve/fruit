@@ -42,21 +42,56 @@ function create_fruit() {
         top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
     };
 
-    var outside = get_outside(base_shape, params);
-    var inside = get_inside(outside, params);
-    var stem = get_stem(inside);
-    var core = get_core(outside, params);
-    var pit = get_pit(base_shape, params);
-    pit = [pit, get_highlight(pit, '#ffe')];
-    var seeds = get_seeds(base_shape, params);
-    outside = [outside, get_highlight(outside, '#f99')];
+    // --- palette
+
+    var skin_color = color(
+        get_hue(-10, 40),
+        random(55, 100),
+        random(10, 80),
+        100
+    );
+    var flesh_color = color(
+        get_hue(5, 15),
+        random(90, 100),
+        random(40, 95),
+        100
+    );
+    var outside = get_outside(base_shape, params, skin_color);
+    var inside = get_inside(outside, params, flesh_color);
+    var stem = get_stem(inside, color(10, 65, 40));
+
+
+    var core_colors = [
+        color(
+            add_hue(hue(flesh_color), random(-5, 5)),
+            saturation(flesh_color),
+            lightness(flesh_color) - random(9, 18),
+            100
+        )
+    ];
+    core_colors.push(
+        color(
+            hue(core_colors[0]),
+            saturation(core_colors[0]),
+            lightness(core_colors[0]) - 7,
+            100
+        )
+    );
+
+    var core = get_core(outside, params, core_colors);
+
+    var pit_color = color(10, 65, random(30, 60));
+    var pit = get_pit(base_shape, pit_color);
+    pit = [pit, get_highlight(pit)];
+    var seeds = get_seeds(base_shape, params, pit_color);
+    outside = [outside, get_highlight(outside)];
 
     var whole = [stem, outside];
     var cut = [outside, inside, core, seeds, stem];
     return {cut, whole};
 }
 
-function get_outside(base_shape, params) {
+function get_outside(base_shape, params, color) {
     var outside = base_shape.slice(0);
 
     // add top dip
@@ -65,11 +100,11 @@ function get_outside(base_shape, params) {
     }
 
     outside.stroke = black;
-    outside.fill = '#f00';
+    outside.fill = color;
     return outside;
 }
 
-function get_stem(inside) {
+function get_stem(inside, fill_color) {
     var origin = inside[0]
     var stem_length = 50;
     var stem = [
@@ -83,13 +118,13 @@ function get_stem(inside) {
         {x: origin.x + 3, y: origin.y - 2},
     ];
 
-    stem.fill = '#ad6a5c';
+    stem.fill = fill_color;
     stem.stroke = black;
     stem.strokeWeight = 3;
     return stem;
 }
 
-function get_highlight(shape, color) {
+function get_highlight(shape) {
     var highlight = [];
 
     var start = 2;
@@ -99,15 +134,14 @@ function get_highlight(shape, color) {
         highlight.push({x: shape[v].x * 0.9, y: shape[v].y * 0.9});
     }
     for (var v = end - 2; v >= start; v--) {
-        console.log(v);
         highlight.push({x: shape[v].x * 0.7, y: shape[v].y * 0.7});
     }
-    highlight.fill = color;
+    highlight.fill = color(100, 100, 100, 50);
 
     return highlight;
 }
 
-function get_inside(outside, params) {
+function get_inside(outside, params, fill_color) {
     // inside
     var inside = [];
     for (var v = 0; v < outside.length; v++) {
@@ -122,50 +156,47 @@ function get_inside(outside, params) {
     }
 
     inside.stroke = black;
-    inside.fill = '#f80';
+    inside.fill = fill_color;
     return inside;
 }
 
-function get_core(outside, params) {
-    // core
-    var core = [];
+function get_core(outside, params, fill_color) {
+    var cores = [[], []];
     var core_size = 0.7;
     for (var v = 0; v < outside.length; v++) {
         var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size;
         var sy = v < 2 || v >= outside.length - 2 || v == Math.floor(outside.length / 2) ? outside[v].y * 0.99 : outside[v].y * core_size;
         sx = v < outside.length / 2 || v >= outside.length - 2 ? sx : sx * 0.9;
-        core.push({x: sx, y: sy});
+        cores[0].push({x: sx, y: sy});
     }
 
-    // add core top dip
+    // add cores[0] top dip
     var divot_offset = params.divot_offset * 2.2;
     for (var i = 0; i < params.top_points.length; i++) {
-        core[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
+        cores[0][params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
     }
 
-    core.fill = '#f60';
+    cores[0].fill = fill_color[0];
 
-    return core;
-}
-
-function get_seeds(outside, params) {
-    var core = [];
-    var core_size = 0.2;
+    core_size = 0.2;
     for (var v = 0; v < outside.length; v++) {
         var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size * 1.2;
         var sy = v < 2 || v >= outside.length - 2 || v == Math.floor(outside.length / 2) ? outside[v].y * 0.8 : outside[v].y * core_size;
         sx = v < outside.length / 2 || v >= outside.length - 2 ? sx : sx * 0.8;
-        core.push({x: sx, y: sy});
+        cores[1].push({x: sx, y: sy});
     }
 
-    // add core top dip
+    // add cores[1] top dip
     var divot_offset = params.divot_offset;
     for (var i = 0; i < params.top_points.length; i++) {
-        core[params.top_points[i]] = {x: core[0].x, y: core[0].y + (params.radius_y * divot_offset)};
+        cores[1][params.top_points[i]] = {x: cores[1][0].x, y: cores[1][0].y + (params.radius_y * divot_offset)};
     }
 
-    core.fill = '#f50';
+    cores[1].fill = fill_color[1];
+    return cores;
+}
 
+function get_seeds(outside, params, fill_color) {
     var seeds = [];
     for (var v = 2; v < outside.length - 3; v++) {
         if (v == Math.floor(outside.length / 2) - 1) {
@@ -187,12 +218,13 @@ function get_seeds(outside, params) {
         seed.push({x: mx, y: my});
         seed.push({x: radius * cos(theta), y: radius * sin(theta)});
         seed.push({x: radius * cos(theta + (PI / 12)), y: radius * sin(theta + (PI / 12))});
-        seed.fill = '#f30';
-        seed.stroke = '#a20';
+        seed.fill = fill_color;
+
+        seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
         seed.strokeWeight = 2;
         seeds.push(seed);
     }
-    return [core, seeds];
+    return seeds;
 }
 
 function get_corner_angle(p1, p2, p3) {
@@ -215,7 +247,7 @@ function get_distance(p1, p2) {
 }
 
 
-function get_pit(base_shape, params) {
+function get_pit(base_shape, fill_color) {
     // pit
     var pit_size = random(0.3, 0.7);
     var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
@@ -227,7 +259,7 @@ function get_pit(base_shape, params) {
     }
 
     pit.stroke = black;
-    pit.fill = '#ff0';
+    pit.fill = fill_color;
     return pit;
 }
 // cool
