@@ -81,13 +81,12 @@ function create_fruit() {
     var core = get_core(outside, params, core_colors);
 
     var pit_color = color(10, 65, random(30, 60));
-    var pit = get_pit(base_shape, pit_color);
-    pit = [pit, get_highlight(pit)];
+    var pit = get_pit(outside, pit_color);
     var seeds = get_seeds(base_shape, params, pit_color);
     outside = [outside, get_highlight(outside)];
 
     var whole = [stem, outside];
-    var cut = [outside, inside, core, seeds, stem];
+    var cut = [outside, inside, core, random([seeds, pit]), stem];
     return {cut, whole};
 }
 
@@ -227,16 +226,16 @@ function get_seeds(outside, params, fill_color) {
 }
 
 function get_pit(base_shape, fill_color) {
-    var pit_size = random(0.3, 0.7);
+    var pit_size = random(0.3, 0.5);
     var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
     for (var v = 1; v < base_shape.length; v+=2) {
         var sx = v < 2 || v >= base_shape.length - 2 ? base_shape[v].x : base_shape[v].x * pit_size;
-        var sy = v < 2 || v >= base_shape.length - 2 ? base_shape[v].y * (pit_size) : base_shape[v].y * pit_size * 0.8;
+        var sy = v < 2 || v >= base_shape.length - 2 ? base_shape[v].y * pit_size : base_shape[v].y * pit_size * 0.8;
         sx = v < base_shape.length / 2 || v >= base_shape.length - 2 ? sx : sx * 0.9;
         pit.push({x: sx, y: sy});
     }
 
-    pit.stroke = black;
+    pit.stroke = color(hue(fill_color), saturation(fill_color), 25);
     pit.fill = fill_color;
     return pit;
 }
