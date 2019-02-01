@@ -1,6 +1,6 @@
 function create_fruit() {
-    x = 0;
-    y = 0;
+    var x = 0;
+    var y = 0;
 
     var base_shape = [];
 
@@ -90,10 +90,11 @@ function create_fruit() {
     var seeds = get_seeds(base_shape, params, pit_color);
     outside = [outside, get_highlight(outside)];
 
-    var whole = [stem, outside];
     var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
-    var cut = [outside, inside, core, center, stem];
-    return {cut, whole};
+    return {
+        cut: [outside, inside, core, center, stem],
+        whole: [stem, outside],
+    };
 }
 
 function get_outside(base_shape, params, color) {
@@ -110,7 +111,7 @@ function get_outside(base_shape, params, color) {
 }
 
 function get_stem(inside, fill_color) {
-    var origin = inside[0]
+    var origin = inside[0];
     var stem_length = 50;
     var stem = [
         {x: origin.x - 3, y: origin.y},
@@ -138,7 +139,7 @@ function get_highlight(shape) {
     for (var v = start; v < end; v++) {
         highlight.push({x: shape[v].x * 0.9, y: shape[v].y * 0.9});
     }
-    for (var v = end - 2; v >= start; v--) {
+    for (v = end - 2; v >= start; v--) {
         highlight.push({x: shape[v].x * 0.7, y: shape[v].y * 0.7});
     }
     highlight.fill = color(100, 100, 100, 50);
@@ -184,15 +185,15 @@ function get_core(outside, params, fill_color) {
 
     // CORE PART TWO
     core_size = 0.2;
-    for (var v = 0; v < outside.length; v++) {
-        var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size * 1.2;
-        var sy = v < 2 || v >= outside.length - 2 || v == Math.floor(outside.length / 2) ? outside[v].y * 0.8 : outside[v].y * core_size;
-        sx = v < outside.length / 2 || v >= outside.length - 2 ? sx : sx * 0.8;
-        cores[1].push({x: sx, y: sy});
+    for (v = 0; v < outside.length; v++) {
+        var cx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size * 1.2;
+        var cy = v < 2 || v >= outside.length - 2 || v == Math.floor(outside.length / 2) ? outside[v].y * 0.8 : outside[v].y * core_size;
+        cx = v < outside.length / 2 || v >= outside.length - 2 ? cx : cx * 0.8;
+        cores[1].push({x: cx, y: cy});
     }
 
-    var divot_offset = params.divot_offset;
-    for (var i = 0; i < params.top_points.length; i++) {
+    divot_offset = params.divot_offset;
+    for (i = 0; i < params.top_points.length; i++) {
         cores[1][params.top_points[i]] = {x: cores[1][0].x, y: cores[1][0].y + (params.radius_y * divot_offset)};
     }
 

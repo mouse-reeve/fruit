@@ -19,7 +19,9 @@ function get_corner_angle(p1, p2, p3) {
     var b = get_distance(p1, p2);
     var c = get_distance(p2, p3);
 
-    return Math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c));
+    return Math.acos(
+        (Math.pow(b, 2) + Math.pow(c, 2) - Math.pow(a, 2)) / (2 * b * c)
+    );
 }
 
 function get_distance(p1, p2) {
