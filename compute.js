@@ -142,7 +142,7 @@ function get_highlight(shape) {
 }
 
 function get_inside(outside, params, fill_color) {
-    // inside
+    // flesh
     var inside = [];
     for (var v = 0; v < outside.length; v++) {
         var sx = v < outside.length / 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * 0.9;
@@ -170,7 +170,6 @@ function get_core(outside, params, fill_color) {
         cores[0].push({x: sx, y: sy});
     }
 
-    // add cores[0] top dip
     var divot_offset = params.divot_offset * 2.2;
     for (var i = 0; i < params.top_points.length; i++) {
         cores[0][params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
@@ -178,6 +177,7 @@ function get_core(outside, params, fill_color) {
 
     cores[0].fill = fill_color[0];
 
+    // CORE PART TWO
     core_size = 0.2;
     for (var v = 0; v < outside.length; v++) {
         var sx = v < 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * core_size * 1.2;
@@ -186,7 +186,6 @@ function get_core(outside, params, fill_color) {
         cores[1].push({x: sx, y: sy});
     }
 
-    // add cores[1] top dip
     var divot_offset = params.divot_offset;
     for (var i = 0; i < params.top_points.length; i++) {
         cores[1][params.top_points[i]] = {x: cores[1][0].x, y: cores[1][0].y + (params.radius_y * divot_offset)};
@@ -227,28 +226,7 @@ function get_seeds(outside, params, fill_color) {
     return seeds;
 }
 
-function get_corner_angle(p1, p2, p3) {
-    /*      p1
-    /       /|
-    /   b /  | a
-    /   /A___|
-    / p2   c  p3
-    */
-
-    var a = get_distance(p3, p1);
-    var b = get_distance(p1, p2);
-    var c = get_distance(p2, p3);
-
-    return Math.acos(((b ** 2) + (c ** 2) - (a ** 2)) / (2 * b * c));
-}
-
-function get_distance(p1, p2) {
-    return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
-}
-
-
 function get_pit(base_shape, fill_color) {
-    // pit
     var pit_size = random(0.3, 0.7);
     var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
     for (var v = 1; v < base_shape.length; v+=2) {
