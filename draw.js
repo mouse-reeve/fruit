@@ -31,13 +31,13 @@ function setup() {
 
     push();
     noStroke();
-    fill(color(15, 94, 92));
+    fill(color('#fef4d7'));
     rect(0, 0, width - 1, height - 1);
     push();
     pop();
 
     strokeWeight(2);
-    stroke(color(15, 94, 30));
+    stroke(color('#dac7a6'));
     rect(40, 40, width - 82, height - 82);
     pop();
 
