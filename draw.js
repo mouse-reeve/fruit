@@ -4,6 +4,7 @@ var data = {};
 var black;
 var white;
 
+var canvas;
 function setup() {
     var param_string = window.location.search.substr(1).split('&');
     var params = {};
@@ -20,7 +21,7 @@ function setup() {
     history.replaceState({}, '', 'index.html?seed=' + seed);
 
     var container = document.getElementById('fruit');
-    var canvas = createCanvas(500, 680);
+    canvas = createCanvas(500, 680);
     canvas.parent(container);
 
     black = color(0);
