@@ -209,7 +209,7 @@ function get_core(outside, params, fill_color) {
 
 function get_seeds(outside, params, fill_color) {
     var seeds = [];
-    var radius = get_distance({x: 0, y: 0}, outside[3]) * random(0.3, 0.4);
+    var radius = get_distance({x: 0, y: 0}, outside[3]) * random(0.05, 0.25);
     for (var v = 2; v < outside.length - 3; v++) {
         if (v == Math.floor(outside.length / 2) - 1) {
             v += 1;
@@ -227,8 +227,9 @@ function get_seeds(outside, params, fill_color) {
         }
         seed.push({x: mx, y: my});
         seed.push({x: mx, y: my});
-        seed.push({x: radius * cos(theta), y: radius * sin(theta)});
-        seed.push({x: radius * cos(theta + (PI / 12)), y: radius * sin(theta + (PI / 12))});
+        var dist = get_distance({x: 0, y: 0}, {x: mx, y: my});
+        seed.push({x: (dist + radius) * cos(theta), y: (dist + radius) * sin(theta)});
+        seed.push({x: (dist + radius) * cos(theta + (PI / 12)), y: (dist + radius) * sin(theta + (PI / 12))});
         seed.fill = fill_color;
 
         seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
