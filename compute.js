@@ -2,32 +2,34 @@ function create_fruit() {
     var x = 0;
     var y = 0;
 
-    var base_shape = [];
-
     var radius_base = random(50, 120);
     var radius_y = radius_base;
     var radius_x = radius_base;
     var perturbation_y = radius_base / 10;
     var perturbation_x = radius_base / 4;
     var point_count = Math.round(random(6, 8));
-    var control_radius = 120 / point_count;
     var angle = PI / point_count;
 
     var start = {x: x, y: y - radius_y};
+
+    var base_shape = [];
     // idk why the first point goes in twice but it does?
     base_shape.push(start);
     base_shape.push(start);
     // create the first side
     var min_radius;
-    for (var a = HALF_PI; a < 3 * HALF_PI; a += angle) {
+    for (var a = HALF_PI + angle; a <= 3 * HALF_PI; a += angle) {
         radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
+        radius_x = radius_x < 0 ? perturbation_x : radius_x;
+        // keep track of the minimum radius to decide if seeds will fit
         if (!min_radius || radius_x < min_radius) {
             min_radius = radius_x;
         }
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
-        var sx2 = x + cos(a + angle) * radius_x;
-        var sy2 = y - sin(a + angle) * radius_y;
-        base_shape.push({x: sx2, y: sy2});
+        radius_y = radius_y < 0 ? perturbation_y : radius_y;
+        var sx = x + cos(a) * radius_x;
+        var sy = y - sin(a) * radius_y;
+        base_shape.push({x: sx, y: sy});
     }
 
     // mirror side a
@@ -116,10 +118,10 @@ function get_stem(inside, fill_color) {
     var stem = [
         {x: origin.x - 3, y: origin.y},
         {x: origin.x - 3, y: origin.y},
-        {x: origin.x - 7, y: origin.y - stem_length/2},
+        {x: origin.x - 7, y: origin.y - stem_length / 2},
         {x: origin.x - 2, y: origin.y - stem_length},
         {x: origin.x + 7, y: origin.y - stem_length},
-        {x: origin.x + 2, y: origin.y - stem_length/2},
+        {x: origin.x + 2, y: origin.y - stem_length / 2},
         {x: origin.x + 3, y: origin.y - 2},
         {x: origin.x + 3, y: origin.y - 2},
     ];
@@ -203,6 +205,7 @@ function get_core(outside, params, fill_color) {
 
 function get_seeds(outside, params, fill_color) {
     var seeds = [];
+    var radius = get_distance({x: 0, y: 0}, outside[3]) * random(0.3, 0.4);
     for (var v = 2; v < outside.length - 3; v++) {
         if (v == Math.floor(outside.length / 2) - 1) {
             v += 1;
@@ -212,7 +215,6 @@ function get_seeds(outside, params, fill_color) {
         var p2 = outside[v + 1];
         var mx = ((p1.x + p2.x) / 2) * 0.2;
         var my = ((p1.y + p2.y) / 2) * 0.2;
-        var radius = get_distance({x: 0, y: 0}, outside[3]) * 0.4;
         var theta = get_corner_angle(outside[0], {x: 0, y: 0}, p2);
         if (v < (outside.length / 2) - 1) {
             theta = (3 * PI / 2) - theta;
