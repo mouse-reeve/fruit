@@ -96,10 +96,15 @@ function create_fruit() {
     outside = [outside, get_highlight(outside)];
 
     var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
-    return {
+    var fruit = {
         whole: [stem, outside],
         cut: [outside, stem, inside, core, center],
     };
+
+    var tip = stem[4];
+    fruit.tip = tip;
+    fruit.radius_base = radius_base;
+    return fruit;
 }
 
 function get_outside(base_shape, params, fill_color) {

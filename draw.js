@@ -17,7 +17,6 @@ function setup() {
     }
     var seed = params.seed || Math.floor(Math.random() * 10000);
     randomSeed(seed);
-    console.log(seed);
     history.replaceState({}, '', 'index.html?seed=' + seed);
 
     var container = document.getElementById('fruit');
@@ -29,7 +28,6 @@ function setup() {
     // this is important
     colorMode(HSL, 100);
 
-    // 1px black outline around the canvas
     push();
     noStroke();
     fill(color(15, 94, 92));
@@ -48,20 +46,69 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
-    draw_from_data(fruit.whole, 250, 200);
-    draw_from_data(fruit.cut, 250, 490);
+    if (fruit.radius_base < 80 && random() > 0.7) {
+        push();
+        beginShape();
+        strokeWeight(4);
+        stroke(fruit.whole[0].stroke);
+        fill(fruit.whole[0].fill);
+        vertex(100, 100);
+        vertex(100, 110);
+
+        vertex(width / 2, height / 3 - 40);
+
+        vertex(width - 100, height / 3);
+        vertex(width - 100, height / 3 - 10);
+
+        vertex(width / 2, height / 3 - 50);
+
+        endShape(CLOSE);
+        pop();
+
+        push();
+        translate(width * 0.35, height / 4 - 10);
+        translate(0, -1 * fruit.tip.y);
+        rotate(PI/10);
+        draw_from_data(fruit.whole);
+
+        translate(150, -15);
+        rotate(PI/-5);
+        draw_from_data(fruit.whole);
+        pop();
+
+        translate(250, 510);
+        draw_from_data(fruit.cut);
+    } else {
+        //  ___________
+        // |     7     |
+        // |   (   )   |
+        // |     v     |
+        // |           |
+        // |     7     |
+        // |   ((o))   |
+        // |     v     |
+        // |___________|
+        push();
+        translate(250, 200);
+        draw_from_data(fruit.whole);
+        pop();
+
+        push();
+        translate(250, 490);
+        draw_from_data(fruit.cut);
+        pop();
+    }
 }
 
-function draw_from_data(fruit, x, y) {
+function draw_from_data(fruit) {
     if (Array.isArray(fruit[0])) {
         for (var f = 0; f < fruit.length; f++) {
-            draw_from_data(fruit[f], x, y);
+            draw_from_data(fruit[f]);
         }
         return;
     }
 
     push();
-    translate(x, y);
     if (!fruit.stroke) {
         noStroke();
     } else {
