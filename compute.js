@@ -48,7 +48,9 @@ function create_fruit() {
 
     var params = {
         divot_offset: random(0, 0.2),
+        radius_base: radius_base,
         radius_y: radius_y,
+        min_radius: min_radius,
         top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
     };
 
@@ -67,7 +69,7 @@ function create_fruit() {
     );
     var outside = get_outside(base_shape, params, skin_color);
     var inside = get_inside(outside, params, flesh_color);
-    var stem = get_stem(inside, color(10, 65, 40));
+    var stem = get_stem(inside, params, color(10, 65, 40));
 
     var core_colors = [
         color(
@@ -96,7 +98,7 @@ function create_fruit() {
     var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
     return {
         whole: [stem, outside],
-        cut: [outside, inside, core, center, stem],
+        cut: [outside, stem, inside, core, center],
     };
 }
 
@@ -113,18 +115,28 @@ function get_outside(base_shape, params, fill_color) {
     return outside;
 }
 
-function get_stem(inside, fill_color) {
+function get_stem(inside, params, fill_color) {
     var origin = inside[0];
-    var stem_length = 50;
+    var stem_length = 35 + 0.9 * (100 - params.radius_base);
+    var stem_width = random(0.02, 0.04) * params.radius_y;
+    var curve = (150 / (100 - stem_length));
+
     var stem = [
-        {x: origin.x - 3, y: origin.y},
-        {x: origin.x - 3, y: origin.y},
-        {x: origin.x - 7, y: origin.y - stem_length / 2},
-        {x: origin.x - 2, y: origin.y - stem_length},
-        {x: origin.x + 7, y: origin.y - stem_length},
-        {x: origin.x + 2, y: origin.y - stem_length / 2},
-        {x: origin.x + 3, y: origin.y - 2},
-        {x: origin.x + 3, y: origin.y - 2},
+        // bottom
+        {x: origin.x - (stem_width / 2), y: origin.y},
+        {x: origin.x - (stem_width / 2), y: origin.y},
+        // curve
+        {x: origin.x - (stem_width + (0.8 * curve)), y: origin.y - (stem_length * 0.65)},
+        // top
+        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length},
+        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
+        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length},
+        // curve
+        {x: origin.x + (stem_width - (0.9 * curve)), y: origin.y - (stem_length * 0.65)},
+        // bottom
+        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
+        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
     ];
 
     stem.fill = fill_color;
