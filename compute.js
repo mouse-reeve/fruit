@@ -34,12 +34,15 @@ function create_fruit() {
 
     // mirror side a
     var reversed = base_shape.map(function (point) {
-        var jitter = random(radius_base / -30, radius_base / 30);
         return {
-            x: (2 * x) - point.x + jitter,
-            y: point.y + jitter,
+            x: (2 * x) - point.x,
+            y: point.y,
         };
     });
+    for (var i = 2; i < reversed.length; i++) {
+        var jitter = random(radius_base / -30, radius_base / 30);
+        reversed[i] = {x: reversed[i].x + jitter, y: reversed[i].y + jitter};
+    }
     reversed.reverse();
     base_shape = base_shape.concat(reversed.slice(1));
 
@@ -50,7 +53,6 @@ function create_fruit() {
     };
 
     // --- palette
-
     var skin_color = color(
         get_hue(-10, 40),
         random(55, 100),
@@ -66,7 +68,6 @@ function create_fruit() {
     var outside = get_outside(base_shape, params, skin_color);
     var inside = get_inside(outside, params, flesh_color);
     var stem = get_stem(inside, color(10, 65, 40));
-
 
     var core_colors = [
         color(
@@ -94,8 +95,8 @@ function create_fruit() {
 
     var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
     return {
-        cut: [outside, inside, core, center, stem],
         whole: [stem, outside],
+        cut: [outside, inside, core, center, stem],
     };
 }
 
@@ -160,8 +161,11 @@ function get_inside(outside, params, fill_color) {
     // add inside top dip
     var divot_offset = params.divot_offset * 1.5;
     for (var i = 0; i < params.top_points.length; i++) {
-        inside[params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
+        var top_point = params.top_points[i];
+        inside[top_point] = {x: outside[top_point].x, y: outside[top_point].y + (params.radius_y * divot_offset)};
     }
+
+    inside = inside.slice(0, -2);
 
     inside.stroke = black;
     inside.fill = fill_color;
