@@ -39,7 +39,7 @@ function create_fruit() {
             y: point.y,
         };
     });
-    for (var i = 2; i < reversed.length; i++) {
+    for (var i = 3; i < reversed.length; i++) {
         var jitter = random(radius_base / -30, radius_base / 30);
         reversed[i] = {x: reversed[i].x + jitter, y: reversed[i].y + jitter};
     }
@@ -100,7 +100,7 @@ function create_fruit() {
     };
 }
 
-function get_outside(base_shape, params, color) {
+function get_outside(base_shape, params, fill_color) {
     var outside = base_shape.slice(0);
 
     // add top dip
@@ -108,8 +108,8 @@ function get_outside(base_shape, params, color) {
         outside[params.top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (params.radius_y * params.divot_offset)};
     }
 
-    outside.stroke = black;
-    outside.fill = color;
+    outside.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    outside.fill = fill_color;
     return outside;
 }
 
@@ -128,7 +128,7 @@ function get_stem(inside, fill_color) {
     ];
 
     stem.fill = fill_color;
-    stem.stroke = black;
+    stem.stroke = color(hue(fill_color), saturation(fill_color), 25);
     stem.strokeWeight = 3;
     return stem;
 }
@@ -167,7 +167,7 @@ function get_inside(outside, params, fill_color) {
 
     inside = inside.slice(0, -2);
 
-    inside.stroke = black;
+    inside.stroke = color(hue(fill_color), saturation(fill_color), 25);
     inside.fill = fill_color;
     return inside;
 }
