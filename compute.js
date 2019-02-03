@@ -16,8 +16,10 @@ function create_fruit() {
     // idk why the first point goes in twice but it does?
     base_shape.push(start);
     base_shape.push(start);
-    // create the first side
     var min_radius;
+    var ave_radius = 0;
+    var rad_count = 0;
+    // create the first side
     for (var a = HALF_PI + angle; a <= 3 * HALF_PI; a += angle) {
         radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
         radius_x = radius_x < 0 ? perturbation_x : radius_x;
@@ -27,10 +29,14 @@ function create_fruit() {
         }
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
         radius_y = radius_y < 0 ? perturbation_y : radius_y;
+        rad_count+=2;
+        ave_radius += radius_x + radius_y;
         var sx = x + cos(a) * radius_x;
         var sy = y - sin(a) * radius_y;
         base_shape.push({x: sx, y: sy});
     }
+
+    ave_radius = ave_radius / rad_count;
 
     // mirror side a
     var reversed = base_shape.map(function (point) {
@@ -50,7 +56,7 @@ function create_fruit() {
         divot_offset: random(0, 0.2),
         radius_base: radius_base,
         radius_y: radius_y,
-        min_radius: min_radius,
+        ave_radius: ave_radius,
         top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
     };
 
@@ -107,20 +113,21 @@ function create_fruit() {
     var tip = stem[4];
     fruit.tip = tip;
     fruit.radius_base = radius_base;
+    fruit.ave_radius = ave_radius;
     return fruit;
 }
 
 function get_branch(params, fill_color) {
-
-    var joints = params.radius_base > 70 ? 5 : params.radius_base > 60 ? 7 : 9;
+    var joints = params.ave_radius < 60 ? 8 : params.ave_radius < 80 ? 7 : 5;
     var segment_length = width / (joints + 1);
-    var theta = PI / 7;
+    var theta = PI / 5;
 
-    var start = joints < 9 ? {x: width / 5, y: width / 5} : {x: width / 7, y: width / 5};
+    var start = joints < 9 ? {x: width / 5, y: width / 6} : {x: width / 6, y: width / 6};
+    start = {x: width / (joints - 2.5), y: width / 6.5};
     var branch = [start, start];
     for (var i = 2; i < joints; i++) {
         var actual_length = segment_length + random(-10, 10);
-        theta -= PI / 95;
+        theta -= PI / 35;
         var sx = branch[i - 1].x + (actual_length * cos(theta));
         var sy = branch[i - 1].y + (actual_length * sin(theta));
         branch.push({x: sx, y: sy});

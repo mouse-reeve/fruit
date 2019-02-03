@@ -47,16 +47,15 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
-    if (true) {//fruit.radius_base <= 70) {
+    if (random() > 0.9) {
         //  ___________
         // |  _______  |
-        // |   7  7    |
-        // | (   )  )  |
-        // |   v  v    |
-        // |           |
-        // |     7     |
-        // |   ((o))   |
-        // |     v     |
+        // |    7  7   |
+        // |  (   )|  |
+        // |    v(   ) |
+        // |   7   v   |
+        // | ((o))     |
+        // |   v       |
         // |___________|
         draw_from_data(fruit.branch);
 
@@ -70,7 +69,7 @@ function draw() {
             modified_stem.fill = fruit.whole[0].fill;
             modified_stem.stroke = fruit.whole[0].stroke;
 
-            var jitter = random(-5, 35);
+            var jitter = fruit.branch.length / 2 > 5 ? random(-5, 35) : 0;
             for (var j = 3; j <= 8; j++) {
                 modified_stem[j].x += jitter * cos(PI / 7);
                 modified_stem[j].y -= jitter * sin(PI / 7);
@@ -84,7 +83,8 @@ function draw() {
             pop();
         }
 
-        translate(250, 520);
+        var bottom = fruit.radius_base > 60 ? height - fruit.radius_base * 2 : 510;
+        translate(200, bottom);
         draw_from_data(fruit.cut);
     } else {
         //  ___________
