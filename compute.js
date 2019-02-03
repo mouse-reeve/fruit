@@ -111,24 +111,30 @@ function create_fruit() {
 }
 
 function get_branch(params, fill_color) {
-    var start = {x: width / 4, y: width / 5};
-    var branch = [start, start];
-    var segment_length = width / 10;
-    var theta = random(PI / 8, PI / 3);
 
-    for (var i = 2; i < 8; i++) {
+    var joints = params.radius_base > 70 ? 5 : params.radius_base > 60 ? 7 : 9;
+    var segment_length = width / (joints + 1);
+    var theta = PI / 7;
+
+    var start = joints < 9 ? {x: width / 5, y: width / 5} : {x: width / 7, y: width / 5};
+    var branch = [start, start];
+    for (var i = 2; i < joints; i++) {
         var actual_length = segment_length + random(-10, 10);
-        theta -= random(PI / 15);
+        theta -= PI / 95;
         var sx = branch[i - 1].x + (actual_length * cos(theta));
         var sy = branch[i - 1].y + (actual_length * sin(theta));
         branch.push({x: sx, y: sy});
     }
 
-    var branch_width = (params.radius_base ** 2) / 500;
+    var branch_width = Math.pow(params.radius_base, 2) / 500;
     reverse = branch.slice(1).map(function(point) {
         return {x: point.x + branch_width * cos(5 * PI / 3), y: point.y + branch_width * sin(5 * PI / 3)};
     });
 
+    reverse.push({
+        x: reverse[reverse.length - 1].x + 10,
+        y: reverse[reverse.length - 1].y + 10
+    });
     reverse.reverse();
     branch = branch.concat(reverse);
 
@@ -165,6 +171,8 @@ function get_stem(inside, params, fill_color) {
         // top
         {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length},
         {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
         {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
         {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length},
         // curve

@@ -47,33 +47,44 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
-    if (true) {//fruit.radius_base < 80 && random() > 0.7) {
+    if (true) {//fruit.radius_base <= 70) {
+        //  ___________
+        // |  _______  |
+        // |   7  7    |
+        // | (   )  )  |
+        // |   v  v    |
+        // |           |
+        // |     7     |
+        // |   ((o))   |
+        // |     v     |
+        // |___________|
         draw_from_data(fruit.branch);
 
         fill('#f00');
-        for (var i = 2; i < fruit.branch.length / 2 - 1; i++) {
+        for (var i = 3; i < fruit.branch.length / 2 - 1; i++) {
             push();
-            var theta = (4 - i) * PI / 9;
-            translate(fruit.branch[i].x, fruit.branch[i].y);
+
+            var modified_stem = fruit.whole[0].map(function(point) {
+                return Object.assign({}, point);
+            });
+            modified_stem.fill = fruit.whole[0].fill;
+            modified_stem.stroke = fruit.whole[0].stroke;
+
+            var jitter = random(-5, 35);
+            for (var j = 3; j <= 8; j++) {
+                modified_stem[j].x += jitter * cos(PI / 7);
+                modified_stem[j].y -= jitter * sin(PI / 7);
+            }
+
+            var theta = (Math.round(fruit.branch.length / 4) - i) * PI / 9;
+            translate(fruit.branch[i].x, fruit.branch[i].y - 3);
             rotate(theta);
-            translate(fruit.tip.x, 0 - fruit.tip.y);
-            draw_from_data(fruit.whole);
+            translate(0 - modified_stem[7].x, 0 - modified_stem[7].y);
+            draw_from_data([modified_stem, fruit.whole[1]]);
             pop();
         }
-        /*
-        push();
-        translate(width * 0.35, height / 4 - 10);
-        translate(0, -1 * fruit.tip.y);
-        rotate(PI/10);
-        draw_from_data(fruit.whole);
 
-        translate(150, -15);
-        rotate(PI/-5);
-        draw_from_data(fruit.whole);
-        pop();
-        */
-
-        translate(250, 510);
+        translate(250, 520);
         draw_from_data(fruit.cut);
     } else {
         //  ___________
