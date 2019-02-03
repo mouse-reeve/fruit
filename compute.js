@@ -99,9 +99,14 @@ function create_fruit() {
     var pit_color = color(10, 65, random(30, 60));
     var pit = get_pit(outside, pit_color);
     var seeds = get_seeds(base_shape, params, pit_color);
+    var big_seeds = get_big_seeds(outside, params, pit_color);
     outside = [outside, get_highlight(outside)];
 
-    var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
+    var center = [pit, big_seeds];//min_radius < radius_base / 5 ? pit : random([seeds, pit]);
+    if (min_radius > radius_base / 5) {
+        center.push(seeds);
+    }
+    center = random(center);
 
     var branch = get_branch(params, pit_color);
     var fruit = {
@@ -267,6 +272,39 @@ function get_core(outside, params, fill_color) {
 
     cores[1].fill = fill_color[1];
     return cores;
+}
+
+function get_big_seeds(outside, params, fill_color) {
+    var seed = [];
+    var scale = random(0.2, 0.3);
+    var start = {x: outside[0].x - (params.ave_radius / 15), y: outside[0].y * scale * 0.75};
+    seed.push(start, start);
+    var halfway = Math.round(outside.length * 0.5) - 1;
+
+    var seed_height = params.radius_base * scale * 0.5;
+    seed.push({x: outside[halfway - 1].x * scale, y: seed_height});
+    seed.push({x: outside[halfway - 4].x * (scale * 0.85), y: seed_height * 0.5});
+    seed.push(start, start);
+    console.log(seed);
+
+    seed.fill = fill_color;
+    seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    seed.strokeWeight = 2;
+
+    var mirror = seed.map(function (point) {
+        return {
+            x: -1 * point.x,
+            y: point.y,
+        };
+    });
+    for (var i = 2; i < mirror.length - 2; i++) {
+        mirror[i].x += random(-0.1 * mirror[i].x, 0.1 * mirror[i].x);
+        mirror[i].y += random(-0.1 * mirror[i].y, 0.1 * mirror[i].y);
+    }
+    mirror.fill = fill_color;
+    mirror.stroke = seed.stroke;
+    mirror.strokeWeight = 2;
+    return random() > 0.6 ? mirror : [seed, mirror];
 }
 
 function get_seeds(outside, params, fill_color) {
