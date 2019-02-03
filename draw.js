@@ -47,25 +47,20 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
-    if (fruit.radius_base < 80 && random() > 0.7) {
-        push();
-        beginShape();
-        strokeWeight(4);
-        stroke(fruit.whole[0].stroke);
-        fill(fruit.whole[0].fill);
-        vertex(100, 100);
-        vertex(100, 110);
+    if (true) {//fruit.radius_base < 80 && random() > 0.7) {
+        draw_from_data(fruit.branch);
 
-        vertex(width / 2, height / 3 - 40);
-
-        vertex(width - 100, height / 3);
-        vertex(width - 100, height / 3 - 10);
-
-        vertex(width / 2, height / 3 - 50);
-
-        endShape(CLOSE);
-        pop();
-
+        fill('#f00');
+        for (var i = 2; i < fruit.branch.length / 2 - 1; i++) {
+            push();
+            var theta = (4 - i) * PI / 9;
+            translate(fruit.branch[i].x, fruit.branch[i].y);
+            rotate(theta);
+            translate(fruit.tip.x, 0 - fruit.tip.y);
+            draw_from_data(fruit.whole);
+            pop();
+        }
+        /*
         push();
         translate(width * 0.35, height / 4 - 10);
         translate(0, -1 * fruit.tip.y);
@@ -76,6 +71,7 @@ function draw() {
         rotate(PI/-5);
         draw_from_data(fruit.whole);
         pop();
+        */
 
         translate(250, 510);
         draw_from_data(fruit.cut);

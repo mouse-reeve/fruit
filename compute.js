@@ -96,7 +96,10 @@ function create_fruit() {
     outside = [outside, get_highlight(outside)];
 
     var center = min_radius < radius_base / 5 ? pit : random([seeds, pit]);
+
+    var branch = get_branch(params, pit_color);
     var fruit = {
+        branch: branch,
         whole: [stem, outside],
         cut: [outside, stem, inside, core, center],
     };
@@ -105,6 +108,33 @@ function create_fruit() {
     fruit.tip = tip;
     fruit.radius_base = radius_base;
     return fruit;
+}
+
+function get_branch(params, fill_color) {
+    var start = {x: width / 4, y: width / 5};
+    var branch = [start, start];
+    var segment_length = width / 10;
+    var theta = random(PI / 8, PI / 3);
+
+    for (var i = 2; i < 8; i++) {
+        var actual_length = segment_length + random(-10, 10);
+        theta -= random(PI / 15);
+        var sx = branch[i - 1].x + (actual_length * cos(theta));
+        var sy = branch[i - 1].y + (actual_length * sin(theta));
+        branch.push({x: sx, y: sy});
+    }
+
+    var branch_width = (params.radius_base ** 2) / 500;
+    reverse = branch.slice(1).map(function(point) {
+        return {x: point.x + branch_width * cos(5 * PI / 3), y: point.y + branch_width * sin(5 * PI / 3)};
+    });
+
+    reverse.reverse();
+    branch = branch.concat(reverse);
+
+    branch.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    branch.fill = fill_color;
+    return branch;
 }
 
 function get_outside(base_shape, params, fill_color) {
