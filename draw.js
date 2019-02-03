@@ -47,24 +47,65 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
-    //  ___________
-    // |     7     |
-    // |   (   )   |
-    // |     v     |
-    // |           |
-    // |     7     |
-    // |   ((o))   |
-    // |     v     |
-    // |___________|
-    push();
-    translate(250, 200);
-    draw_from_data(fruit.whole);
-    pop();
+    if (random() > 0.9) {
+        //  ___________
+        // |  _______  |
+        // |    7  7   |
+        // |  (   )|  |
+        // |    v(   ) |
+        // |   7   v   |
+        // | ((o))     |
+        // |   v       |
+        // |___________|
+        draw_from_data(fruit.branch);
 
-    push();
-    translate(250, 490);
-    draw_from_data(fruit.cut);
-    pop();
+        fill('#f00');
+        for (var i = 3; i < fruit.branch.length / 2 - 1; i++) {
+            push();
+
+            var modified_stem = fruit.whole[0].map(function(point) {
+                return Object.assign({}, point);
+            });
+            modified_stem.fill = fruit.whole[0].fill;
+            modified_stem.stroke = fruit.whole[0].stroke;
+
+            var jitter = fruit.branch.length / 2 > 5 ? random(-5, 35) : 0;
+            for (var j = 3; j <= 8; j++) {
+                modified_stem[j].x += jitter * cos(PI / 7);
+                modified_stem[j].y -= jitter * sin(PI / 7);
+            }
+
+            var theta = (Math.round(fruit.branch.length / 4) - i) * PI / 9;
+            translate(fruit.branch[i].x, fruit.branch[i].y - 3);
+            rotate(theta);
+            translate(0 - modified_stem[7].x, 0 - modified_stem[7].y);
+            draw_from_data([modified_stem, fruit.whole[1]]);
+            pop();
+        }
+
+        var bottom = fruit.radius_base > 60 ? height - fruit.radius_base * 2 : 510;
+        translate(200, bottom);
+        draw_from_data(fruit.cut);
+    } else {
+        //  ___________
+        // |     7     |
+        // |   (   )   |
+        // |     v     |
+        // |           |
+        // |     7     |
+        // |   ((o))   |
+        // |     v     |
+        // |___________|
+        push();
+        translate(250, 200);
+        draw_from_data(fruit.whole);
+        pop();
+
+        push();
+        translate(250, 490);
+        draw_from_data(fruit.cut);
+        pop();
+    }
 }
 
 function draw_from_data(fruit) {
