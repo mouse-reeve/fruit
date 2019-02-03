@@ -47,58 +47,24 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
-    if (fruit.radius_base < 80 && random() > 0.7) {
-        push();
-        beginShape();
-        strokeWeight(4);
-        stroke(fruit.whole[0].stroke);
-        fill(fruit.whole[0].fill);
-        vertex(100, 100);
-        vertex(100, 110);
+    //  ___________
+    // |     7     |
+    // |   (   )   |
+    // |     v     |
+    // |           |
+    // |     7     |
+    // |   ((o))   |
+    // |     v     |
+    // |___________|
+    push();
+    translate(250, 200);
+    draw_from_data(fruit.whole);
+    pop();
 
-        vertex(width / 2, height / 3 - 40);
-
-        vertex(width - 100, height / 3);
-        vertex(width - 100, height / 3 - 10);
-
-        vertex(width / 2, height / 3 - 50);
-
-        endShape(CLOSE);
-        pop();
-
-        push();
-        translate(width * 0.35, height / 4 - 10);
-        translate(0, -1 * fruit.tip.y);
-        rotate(PI/10);
-        draw_from_data(fruit.whole);
-
-        translate(150, -15);
-        rotate(PI/-5);
-        draw_from_data(fruit.whole);
-        pop();
-
-        translate(250, 510);
-        draw_from_data(fruit.cut);
-    } else {
-        //  ___________
-        // |     7     |
-        // |   (   )   |
-        // |     v     |
-        // |           |
-        // |     7     |
-        // |   ((o))   |
-        // |     v     |
-        // |___________|
-        push();
-        translate(250, 200);
-        draw_from_data(fruit.whole);
-        pop();
-
-        push();
-        translate(250, 490);
-        draw_from_data(fruit.cut);
-        pop();
-    }
+    push();
+    translate(250, 490);
+    draw_from_data(fruit.cut);
+    pop();
 }
 
 function draw_from_data(fruit) {
