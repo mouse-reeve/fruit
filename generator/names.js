@@ -163,14 +163,14 @@ var pieces = {
 };
 
 function get_name(radius) {
-    var name = random(pieces.begin) + random(pieces.middle) + random(pieces.end);
+    var name = random(pieces.begin) + random([random(pieces.middle), '', '']) + random(pieces.end);
     if (random() > 0.3) {
         name = random(counties) + ' ' + name;
     } else {
         name = random(pieces.descriptor) + ' ' + name;
     }
 
-    if (radius < 60) {
+    if (radius < 60 && random() > 0.7) {
         name += 'berry';
     }
 
