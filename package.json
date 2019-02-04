@@ -1,0 +1,25 @@
+{
+  "name": "fruit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "dependencies": {
+    "mastodon": "^1.2.2",
+    "puppeteer": "^1.12.1",
+    "twitter": "^1.7.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mouse-reeve/fruit.git"
+  },
+  "author": "Mouse Reeve",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mouse-reeve/fruit/issues"
+  },
+  "homepage": "https://github.com/mouse-reeve/fruit#readme"
+}
