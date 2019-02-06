@@ -1,4 +1,5 @@
 var twitter = require('twitter');
+var fs = require('fs');
 var config = require('./config');
 
 var client = new twitter({
@@ -8,10 +9,13 @@ var client = new twitter({
     access_token_secret: config.twitter_access_secret,
 });
 
-var data = require('fs').readFileSync('fruit.png');
+var data = fs.readFileSync('fruit.png');
+var text = fs.readFileSync('text', 'utf8');
+
 client.post('media/upload', {media: data}, function (error, media, response) {
     if (!error) {
         var status = {
+            status: text,
             media_ids: media.media_id_string // Pass the media id string
         };
 
