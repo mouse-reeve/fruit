@@ -11,16 +11,16 @@ var canvas_width;
 var artists;
 function preload() {
       artists = [
-          ['Inald Machardon', loadFont('fonts/Calligraffitti/Calligraffitti-Regular.ttf')],
-          ['O. Edophi', loadFont('fonts/Caveat/Caveat-Regular.ttf')],
-          ['Artenbel Naugell', loadFont('fonts/Nanum_Brush_Script/NanumBrushScript-Regular.ttf')],
-          ['J Blichauphs', loadFont('fonts/Dawning_of_a_New_Day/DawningofaNewDay.ttf')],
-          ['AA Lusfor', loadFont('fonts/Kristi/Kristi-Regular.ttf')],
-          ['Yysl Hadnehn', loadFont('fonts/La_Belle_Aurore/LaBelleAurore.ttf')],
-          ['Pesmar Den', loadFont('fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf')],
-          ['Farlaçon Mercanus', loadFont('fonts/Zeyada/Zeyada.ttf')],
-          ['Jixabbolt Serger', loadFont('fonts/Loved_by_the_King/LovedbytheKing.ttf')],
-          ['Phinsiær', loadFont('fonts/Reenie_Beanie/ReenieBeanie.ttf')],
+          ['Inald Machardon', 'inald machardon', 'Kristi'],
+          ['Olia Shaulsene Boot Edophi', 'O. Edophi', 'Caveat'],
+          ['Artenbel Naugell', 'Artenbel Naugell', 'Nanum Brush Script'],
+          ['Józat Blichauphs', 'J Blichauphs', 'Dawning of a New Day'],
+          ['Auro Alese Lusfor', 'AA Lusfor', 'Kristi'],
+          ['Yysl Hadnehn', 'Yysl Hadnehn', 'La Belle Aurore'],
+          ['Pesmar Den', 'Pesmar Den','Architects Daughter'],
+          ['Farlaçon Mercanus', 'Farlaçon Mercanus', 'Zeyada'],
+          ['Jixabbolt Serger', 'Jixabbolt Serger', 'Loved by the King'],
+          ['Phinsiær', 'Phinsiær', 'Reenie Beanie'],
       ];
 }
 function setup() {
@@ -91,7 +91,7 @@ function draw() {
         //  ___________
         // |  _______  |
         // |    7  7   |
-        // |  (   )|  |
+        // |  (   )|   |
         // |    v(   ) |
         // |   7   v   |
         // | ((o))     |
@@ -174,11 +174,12 @@ function draw() {
     var parchment = color('#fef4d7');
     noStroke();
     for (var i = 0; i < 3; i++) {
-        parchment.setAlpha(30);
+        parchment.setAlpha(20);
         fill(parchment);
         ellipse(
             canvas_origin.x + canvas_width - random(50, 150),
-            canvas_origin.y + canvas_height - random(50, 80), 80, 30);
+            canvas_origin.y + canvas_height - random(50, 80), 80, 30
+        );
     }
     pop();
 

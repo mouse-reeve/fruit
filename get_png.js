@@ -4,7 +4,7 @@ var puppeteer = require('puppeteer');
     var browser = await puppeteer.launch();
     var page = await browser.newPage();
 
-    await page.goto('file:///Users/mouse/Projects/fruit/index.html');
+    await page.goto('file://' + process.cwd() + '/index.html');
 
     var canvas = await page.$('canvas');
     await canvas.screenshot({
