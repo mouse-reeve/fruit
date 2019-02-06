@@ -122,39 +122,6 @@ function create_fruit() {
     return fruit;
 }
 
-function get_branch(params, fill_color) {
-    var joints = params.ave_radius < 60 ? 8 : params.ave_radius < 80 ? 7 : 5;
-    var segment_length = paper_width / (joints + 1);
-    var theta = PI / 5;
-
-    var start = joints < 9 ? {x: paper_width / 5, y: paper_width / 6} : {x: paper_width / 6, y: paper_width / 6};
-    start = {x: paper_width / (joints - 2.5), y: paper_width / 6.5};
-    var branch = [start, start];
-    for (var i = 2; i < joints; i++) {
-        var actual_length = segment_length + random(-10, 10);
-        theta -= PI / 35;
-        var sx = branch[i - 1].x + (actual_length * cos(theta));
-        var sy = branch[i - 1].y + (actual_length * sin(theta));
-        branch.push({x: sx, y: sy});
-    }
-
-    var branch_width = Math.pow(params.radius_base, 2) / 500;
-    reverse = branch.slice(1).map(function(point) {
-        return {x: point.x + branch_width * cos(5 * PI / 3), y: point.y + branch_width * sin(5 * PI / 3)};
-    });
-
-    reverse.push({
-        x: reverse[reverse.length - 1].x + 10,
-        y: reverse[reverse.length - 1].y + 10
-    });
-    reverse.reverse();
-    branch = branch.concat(reverse);
-
-    branch.stroke = color(hue(fill_color), saturation(fill_color), 25);
-    branch.fill = fill_color;
-    return branch;
-}
-
 function get_outside(base_shape, params, fill_color) {
     var outside = base_shape.slice(0);
 
