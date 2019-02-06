@@ -5,6 +5,24 @@ var black;
 var white;
 
 var canvas;
+var canvas_origin;
+var canvas_height;
+var canvas_width;
+var artists;
+function preload() {
+      artists = [
+          ['Inald Machardon', loadFont('fonts/Calligraffitti/Calligraffitti-Regular.ttf')],
+          ['O. Edophi', loadFont('fonts/Caveat/Caveat-Regular.ttf')],
+          ['Artenbel Naugell', loadFont('fonts/Nanum_Brush_Script/NanumBrushScript-Regular.ttf')],
+          ['J Blichauphs', loadFont('fonts/Dawning_of_a_New_Day/DawningofaNewDay.ttf')],
+          ['AA Lusfor', loadFont('fonts/Kristi/Kristi-Regular.ttf')],
+          ['Yysl Hadnehn', loadFont('fonts/La_Belle_Aurore/LaBelleAurore.ttf')],
+          ['Pesmar Den', loadFont('fonts/Architects_Daughter/ArchitectsDaughter-Regular.ttf')],
+          ['Farlaçon Mercanus', loadFont('fonts/Zeyada/Zeyada.ttf')],
+          ['Jixabbolt Serger', loadFont('fonts/Loved_by_the_King/LovedbytheKing.ttf')],
+          ['Phinsiær', loadFont('fonts/Reenie_Beanie/ReenieBeanie.ttf')],
+      ];
+}
 function setup() {
     var param_string = window.location.search.substr(1).split('&');
     var params = {};
@@ -21,7 +39,7 @@ function setup() {
     history.replaceState({}, '', 'index.html?seed=' + seed);
 
     var container = document.getElementById('fruit');
-    canvas = createCanvas(500, 680);
+    canvas = createCanvas(800, 780);//500, 680);
     canvas.parent(container);
 
     black = color(0);
@@ -29,18 +47,40 @@ function setup() {
     // this is important
     colorMode(HSL, 100);
 
+    canvas_origin = {x: 150, y: 50};
+    canvas_width = 500;
+    canvas_height = 680;
     push();
     noStroke();
+    fill('#FFFDE8');
+    rect(0, 0, width, height);
+
+    fill(black);
+    rect(
+        canvas_origin.x - 10,
+        canvas_origin.y - 15,
+        canvas_width + 20,
+        canvas_height + 30
+    );
+
     fill(color('#fef4d7'));
-    rect(0, 0, width - 1, height - 1);
-    push();
-    pop();
+    rect(
+        canvas_origin.x,
+        canvas_origin.y,
+        canvas_width,
+        canvas_height
+    );
 
     strokeWeight(2);
     stroke(color('#dac7a6'));
-    rect(40, 40, width - 82, height - 82);
+    noFill();
+    rect(
+        canvas_origin.x + 40,
+        canvas_origin.y + 40,
+        canvas_width - 80,
+        canvas_height - 80
+    );
     pop();
-
     noLoop();
 }
 
@@ -57,6 +97,8 @@ function draw() {
         // | ((o))     |
         // |   v       |
         // |___________|
+        push();
+        translate(canvas_origin.x, canvas_origin.y);
         draw_from_data(fruit.branch);
 
         fill('#f00');
@@ -83,9 +125,10 @@ function draw() {
             pop();
         }
 
-        var bottom = fruit.radius_base > 60 ? height - fruit.radius_base * 2 : 510;
+        var bottom = fruit.radius_base > 60 ? canvas_height - fruit.radius_base * 2 : 510;
         translate(200, bottom);
         draw_from_data(fruit.cut);
+        pop();
     } else {
         //  ___________
         // |     7     |
@@ -97,15 +140,48 @@ function draw() {
         // |     v     |
         // |___________|
         push();
-        translate(250, 200);
+        translate(canvas_origin.x + 250, canvas_origin.y + 200);
         draw_from_data(fruit.whole);
         pop();
 
         push();
-        translate(250, 490);
+        translate(canvas_origin.x + 250, canvas_origin.y + 490);
         draw_from_data(fruit.cut);
         pop();
     }
+
+    // text + signature
+    //
+    var artist = random(artists);
+    var year = Math.round(random(2087, 2139));
+
+    push();
+    textSize(15);
+    fill(color('#8D7553'));
+    textAlign(RIGHT);
+    textFont(artist[1]);
+    text(
+        artist[0],
+        canvas_origin.x + canvas_width - 60,
+        canvas_origin.y + canvas_height - 65
+    )
+    text(
+        year,
+        canvas_origin.x + canvas_width - 60,
+        canvas_origin.y + canvas_height - 50
+    )
+
+    var parchment = color('#fef4d7');
+    noStroke();
+    for (var i = 0; i < 3; i++) {
+        parchment.setAlpha(30);
+        fill(parchment);
+        ellipse(
+            canvas_origin.x + canvas_width - random(50, 150),
+            canvas_origin.y + canvas_height - random(50, 80), 80, 30);
+    }
+    pop();
+
 }
 
 function draw_from_data(fruit) {

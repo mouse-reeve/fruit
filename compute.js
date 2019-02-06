@@ -124,11 +124,12 @@ function create_fruit() {
 
 function get_branch(params, fill_color) {
     var joints = params.ave_radius < 60 ? 8 : params.ave_radius < 80 ? 7 : 5;
-    var segment_length = width / (joints + 1);
+    var canvas_width = 500;
+    var segment_length = canvas_width / (joints + 1);
     var theta = PI / 5;
 
-    var start = joints < 9 ? {x: width / 5, y: width / 6} : {x: width / 6, y: width / 6};
-    start = {x: width / (joints - 2.5), y: width / 6.5};
+    var start = joints < 9 ? {x: canvas_width / 5, y: canvas_width / 6} : {x: canvas_width / 6, y: canvas_width / 6};
+    start = {x: canvas_width / (joints - 2.5), y: canvas_width / 6.5};
     var branch = [start, start];
     for (var i = 2; i < joints; i++) {
         var actual_length = segment_length + random(-10, 10);
@@ -285,7 +286,6 @@ function get_big_seeds(outside, params, fill_color) {
     seed.push({x: outside[halfway - 1].x * scale, y: seed_height});
     seed.push({x: outside[halfway - 4].x * (scale * 0.85), y: seed_height * 0.5});
     seed.push(start, start);
-    console.log(seed);
 
     seed.fill = fill_color;
     seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
