@@ -124,12 +124,11 @@ function create_fruit() {
 
 function get_branch(params, fill_color) {
     var joints = params.ave_radius < 60 ? 8 : params.ave_radius < 80 ? 7 : 5;
-    var canvas_width = 500;
-    var segment_length = canvas_width / (joints + 1);
+    var segment_length = paper_width / (joints + 1);
     var theta = PI / 5;
 
-    var start = joints < 9 ? {x: canvas_width / 5, y: canvas_width / 6} : {x: canvas_width / 6, y: canvas_width / 6};
-    start = {x: canvas_width / (joints - 2.5), y: canvas_width / 6.5};
+    var start = joints < 9 ? {x: paper_width / 5, y: paper_width / 6} : {x: paper_width / 6, y: paper_width / 6};
+    start = {x: paper_width / (joints - 2.5), y: paper_width / 6.5};
     var branch = [start, start];
     for (var i = 2; i < joints; i++) {
         var actual_length = segment_length + random(-10, 10);
@@ -273,84 +272,5 @@ function get_core(outside, params, fill_color) {
 
     cores[1].fill = fill_color[1];
     return cores;
-}
-
-function get_big_seeds(outside, params, fill_color) {
-    var seed = [];
-    var scale = random(0.2, 0.3);
-    var start = {x: outside[0].x - (params.ave_radius / 15), y: outside[0].y * scale * 0.75};
-    seed.push(start, start);
-    var halfway = Math.round(outside.length * 0.5) - 1;
-
-    var seed_height = params.radius_base * scale * 0.5;
-    seed.push({x: outside[halfway - 1].x * scale, y: seed_height});
-    seed.push({x: outside[halfway - 4].x * (scale * 0.85), y: seed_height * 0.5});
-    seed.push(start, start);
-
-    seed.fill = fill_color;
-    seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
-    seed.strokeWeight = 2;
-
-    var mirror = seed.map(function (point) {
-        return {
-            x: -1 * point.x,
-            y: point.y,
-        };
-    });
-    for (var i = 2; i < mirror.length - 2; i++) {
-        mirror[i].x += random(-0.1 * mirror[i].x, 0.1 * mirror[i].x);
-        mirror[i].y += random(-0.1 * mirror[i].y, 0.1 * mirror[i].y);
-    }
-    mirror.fill = fill_color;
-    mirror.stroke = seed.stroke;
-    mirror.strokeWeight = 2;
-    return random() > 0.6 ? mirror : [seed, mirror];
-}
-
-function get_seeds(outside, params, fill_color) {
-    var seeds = [];
-    var radius = get_distance({x: 0, y: 0}, outside[3]) * random(0.05, 0.25);
-    for (var v = 2; v < outside.length - 3; v++) {
-        if (v == Math.floor(outside.length / 2) - 1) {
-            v += 1;
-        }
-        var seed = [];
-        var p1 = outside[v];
-        var p2 = outside[v + 1];
-        var mx = ((p1.x + p2.x) / 2) * 0.2;
-        var my = ((p1.y + p2.y) / 2) * 0.2;
-        var theta = get_corner_angle(outside[0], {x: 0, y: 0}, p2);
-        if (v < (outside.length / 2) - 1) {
-            theta = (3 * PI / 2) - theta;
-        } else {
-            theta = (3 * PI / 2) + theta;
-        }
-        seed.push({x: mx, y: my});
-        seed.push({x: mx, y: my});
-        var dist = get_distance({x: 0, y: 0}, {x: mx, y: my});
-        seed.push({x: (dist + radius) * cos(theta), y: (dist + radius) * sin(theta)});
-        seed.push({x: (dist + radius) * cos(theta + (PI / 12)), y: (dist + radius) * sin(theta + (PI / 12))});
-        seed.fill = fill_color;
-
-        seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
-        seed.strokeWeight = 2;
-        seeds.push(seed);
-    }
-    return seeds;
-}
-
-function get_pit(base_shape, fill_color) {
-    var pit_size = random(0.3, 0.5);
-    var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
-    for (var v = 1; v < base_shape.length; v+=2) {
-        var sx = v < 2 || v >= base_shape.length - 2 ? base_shape[v].x : base_shape[v].x * pit_size;
-        var sy = v < 2 || v >= base_shape.length - 2 ? base_shape[v].y * pit_size : base_shape[v].y * pit_size * 0.8;
-        sx = v < base_shape.length / 2 || v >= base_shape.length - 2 ? sx : sx * 0.9;
-        pit.push({x: sx, y: sy});
-    }
-
-    pit.stroke = color(hue(fill_color), saturation(fill_color), 25);
-    pit.fill = fill_color;
-    return pit;
 }
 // cool
