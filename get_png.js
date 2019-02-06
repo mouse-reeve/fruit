@@ -10,6 +10,8 @@ var puppeteer = require('puppeteer');
     await canvas.screenshot({
         path: 'fruit.png',
     });
+    var description = await page.$eval('#description', node => node.innerText);
+    console.log(description);
 
     await browser.close();
 })();

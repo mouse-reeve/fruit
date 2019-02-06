@@ -151,7 +151,6 @@ function draw() {
     }
 
     // text + signature
-    //
     var artist = random(artists);
     var year = Math.round(random(2087, 2139));
 
@@ -159,9 +158,9 @@ function draw() {
     textSize(15);
     fill(color('#8D7553'));
     textAlign(RIGHT);
-    textFont(artist[1]);
+    textFont(artist[2]);
     text(
-        artist[0],
+        artist[1],
         canvas_origin.x + canvas_width - 60,
         canvas_origin.y + canvas_height - 65
     )
@@ -183,6 +182,7 @@ function draw() {
     }
     pop();
 
+    document.getElementById('description').innerText = 'by ' + artist[0] + ', ' + year;
 }
 
 function draw_from_data(fruit) {
