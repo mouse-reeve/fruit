@@ -157,17 +157,29 @@ function draw() {
     ];
     var artist = random(artists);
     var year = Math.round(random(2087, 2139));
+    var name = get_name(fruit.radius_base);
 
     push();
     textSize(15);
     fill(color('#8D7553'));
-    textAlign(RIGHT);
     textFont(artist[2]);
+
+    // fruit name
+    text(
+        name,
+        paper_origin.x + 55,
+        paper_origin.y + paper_height - 55
+    );
+
+    textAlign(RIGHT);
+    // artist name
     text(
         artist[1],
         paper_origin.x + paper_width - 60,
         paper_origin.y + paper_height - 65
     );
+
+    // year
     text(
         year,
         paper_origin.x + paper_width - 60,
@@ -186,7 +198,7 @@ function draw() {
     }
     pop();
 
-    document.getElementById('description').innerText = 'by ' + artist[0] + ', ' + year;
+    document.getElementById('description').innerText = name + ', by ' + artist[0] + ', ' + year;
 }
 
 function draw_from_data(fruit) {
