@@ -58,6 +58,7 @@ function create_fruit() {
         radius_y: radius_y,
         ave_radius: ave_radius,
         top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
+        min_radius: min_radius,
     };
 
     // --- palette
@@ -94,25 +95,30 @@ function create_fruit() {
         )
     );
 
-    var core = get_core(outside, params, core_colors);
-
+    var center;
     var pit_color = color(10, 65, random(30, 60));
-    var pit = get_pit(outside, pit_color);
-    var seeds = get_seeds(base_shape, params, pit_color);
-    var big_seeds = get_big_seeds(outside, params, pit_color);
-    outside = [outside, get_highlight(outside)];
+    if (random() > 0.3) {
+        var core = get_core(outside, params, core_colors);
+        var pit = get_pit(outside, pit_color);
+        var seeds = get_seeds(base_shape, params, pit_color);
+        var big_seeds = get_big_seeds(outside, params, pit_color);
 
-    var center = [pit, big_seeds];//min_radius < radius_base / 5 ? pit : random([seeds, pit]);
-    if (min_radius > radius_base / 5) {
-        center.push(seeds);
+        center = [pit, big_seeds];
+        if (min_radius > radius_base / 5) {
+            center.push(seeds);
+        }
+        center = [core, random(center)];
+    } else {
+        center = get_segments(outside, params, core_colors);
     }
-    center = random(center);
 
     var branch = get_branch(params, pit_color);
+
+    outside = [outside, get_highlight(outside)];
     var fruit = {
         branch: branch,
         whole: [stem, outside],
-        cut: [outside, stem, inside, core, center],
+        cut: [outside, stem, inside, center],
     };
 
     var tip = stem[4];

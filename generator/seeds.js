@@ -1,4 +1,5 @@
-// --- things that could go in the middle of a fruit
+// things that could go in the middle of a fruit
+
 function get_big_seeds(outside, params, fill_color) {
     // like in an apple? "big seeds" is such a weird name for this
     //

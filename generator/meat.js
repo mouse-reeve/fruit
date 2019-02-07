@@ -1,5 +1,59 @@
 // MEEEAAAAAT or maybe FLEEEESSSSHHH
 
+function get_segments(outside, params, fill_colors) {
+    // citrus style, or big seeds? could be either
+    console.log(params.radius_base, params.ave_radius, params.min_radius);
+    var shrink = 0.8;
+
+    var start = {x: params.radius_base / -10, y: params.radius_base / 20};
+    var segment = [start, start];
+    // skipping every other coord gives it a rounder shape (see, pit)
+    for (var v = 2; v < outside.length / 2; v+=2) {
+        var sx = outside[v].x * shrink;
+        sx = sx > -5 ? -10 : sx;
+        var sy = outside[v].y * shrink;
+        segment.push({x: sx, y: sy});
+    }
+    segment.stroke = color(hue(fill_colors[0]), saturation(fill_colors[0]), 25);
+    segment.fill = fill_colors[0];
+
+    var shading = [start, start];
+    shrink = 0.6;
+    // starburst shape for the dark color
+    for (v = 2; v < outside.length / 2 - 1; v++) {
+        var sx = outside[v].x * shrink;
+        sx = sx > -5 ? -10 : sx;
+        var sy = outside[v].y * shrink;
+        shading.push({x: sx, y: sy});
+        if (v + 1 >= outside.length / 2 - 1) {
+            shading.push({x: sx * 0.4, y: sy * 0.4});
+        } else {
+            shading.push({x: (sx + outside[v + 1].x) * 0.2, y: (sy + outside[v + 1].y) * 0.2});
+        }
+    }
+    shading.fill = fill_colors[1];
+
+    // 0.9 for the shrinkage on the right side due to janky 3d effect
+    var mirror = segment.map(function (point) {
+        return {
+            x: -0.9 * point.x,
+            y: point.y,
+        };
+    });
+
+    var shading_mirror = shading.map(function (point) {
+        return {
+            x: -0.9 * point.x,
+            y: point.y,
+        };
+    });
+    shading_mirror.fill = fill_colors[1];
+
+    mirror.stroke = color(hue(fill_colors[0]), saturation(fill_colors[0]), 25);
+    mirror.fill = fill_colors[0];
+    return [segment, shading, mirror, shading_mirror];
+}
+
 function get_inside(outside, params, fill_color) {
     // flesh
     var inside = [];
