@@ -6,7 +6,7 @@ function create_fruit() {
     var radius_y = radius_base;
     var radius_x = radius_base;
     var perturbation_y = radius_base / 10;
-    var perturbation_x = radius_base / 4;
+    var perturbation_x = radius_base / 7;
     var point_count = Math.round(random(6, 8));
     var angle = PI / point_count;
 
@@ -21,7 +21,7 @@ function create_fruit() {
     var rad_count = 0;
     // create the first side
     for (var a = HALF_PI + angle; a <= 3 * HALF_PI; a += angle) {
-        radius_x += Math.round(random(-1 * perturbation_x, perturbation_x));
+        radius_x += Math.round(random(-1 * perturbation_x, 0.7 * perturbation_x));
         radius_x = radius_x < 0 ? perturbation_x : radius_x;
         // keep track of the minimum radius to decide if seeds will fit
         if (!min_radius || radius_x < min_radius) {
