@@ -2,7 +2,6 @@
 
 function get_segments(outside, params, fill_colors) {
     // citrus style, or big seeds? could be either
-    console.log(params.radius_base, params.ave_radius, params.min_radius);
     var shrink = 0.8;
 
     var start = {x: params.radius_base / -10, y: params.radius_base / 20};
