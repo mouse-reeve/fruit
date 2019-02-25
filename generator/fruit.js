@@ -97,20 +97,28 @@ function create_fruit() {
 
     var center;
     var pit_color = color(10, 65, random(30, 60));
-    if (random() > 0.3) {
-        var core = get_core(outside, params, core_colors);
+    var pit_type = random([
+        'pit', 'pit', 'pit',
+        'seeds', 'seeds', 'seeds',
+        'segments',
+    ]);
+    var core = get_core(outside, params, core_colors);
+    if (min_radius < radius_base / 5) {
+        pit_type = 'pit';
+    }
+
+    if (pit_type == 'segments') {
+        center = get_segments(outside, params, core_colors);
+    } else if (pit_type == 'pit') {
         var pit = get_pit(outside, pit_color);
+        center = [core, pit];
+    } else {
         var seeds = get_seeds(base_shape, params, pit_color);
         var big_seeds = get_big_seeds(outside, params, pit_color);
-
-        center = [pit, big_seeds];
-        if (min_radius > radius_base / 5) {
-            center.push(seeds);
-        }
-        center = [core, random(center)];
-    } else {
-        center = get_segments(outside, params, core_colors);
+        center = [core, random([seeds, big_seeds])];
     }
+
+    params.pit_type = pit_type;
 
     var branch = get_branch(params, pit_color);
 
