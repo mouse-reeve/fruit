@@ -4,11 +4,16 @@
     </head>
 <body>
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css?family=Architects+Daughter|Calligraffitti|Caveat|Dawning+of+a+New+Day|Kristi|La+Belle+Aurore|Loved+by+the+King|Nanum+Brush+Script|Reenie+Beanie|Zeyada" rel="stylesheet">
 <script src="p5.min.js"></script>
+<script src="tracery.min.js"></script>
 
 <script src="generator/counties.js"></script>
 <script src="generator/names.js"></script>
+<script src="generator/description.js"></script>
 <script src="generator/utilities.js"></script>
 <script src="generator/outside.js"></script>
 <script src="generator/meat.js"></script>
@@ -19,9 +24,11 @@
 
 <form action="index.html">
 <button>refresh</button>
-</form>
 <p id="description"></p>
 <div id="fruit"></div>
+<p id="fact"></p>
+<button>refresh</button>
+</form>
 
 <!-- annoyingly necessary to get fonts to work in chrome -->
 <span style="font-family: Architects Daughter">f1</span>

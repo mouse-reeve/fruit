@@ -219,6 +219,10 @@ function draw() {
     pop();
 
     document.getElementById('description').innerText = name + ', by ' + artist[0] + ', ' + year;
+
+    // fun fact followup
+    var fact = fruit_fact(name, fruit);
+    document.getElementById('fact').innerText = fact;
 }
 
 function draw_from_data(fruit) {
