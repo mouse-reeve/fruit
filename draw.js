@@ -178,7 +178,7 @@ function draw() {
     ];
     var artist = random(artists);
     var year = Math.round(random(2087, 2139));
-    var name = get_name(fruit.radius_base);
+    var name = get_name(fruit.ave_radius, fruit.pit_type);
 
     push();
     textSize(15);

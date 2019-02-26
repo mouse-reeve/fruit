@@ -162,7 +162,7 @@ var pieces = {
     ],
 };
 
-function get_name(radius) {
+function get_name(radius, pit) {
     var name = random(pieces.begin) + random([random(pieces.middle), '', '']) + random(pieces.end);
     if (random() > 0.3) {
         name = random(counties) + ' ' + name;
@@ -170,7 +170,8 @@ function get_name(radius) {
         name = random(pieces.descriptor) + ' ' + name;
     }
 
-    if (radius < 60 && random() > 0.7) {
+    console.log(pit, radius);
+    if (pit == 'seed' && radius < 50 && random() > 0.3) {
         name += 'berry';
     }
 
