@@ -2,15 +2,17 @@
 
 function get_segments(outside, params, fill_colors) {
     // citrus style, or big seeds? could be either
-    var shrink = 0.8;
+    var shrink = 0.85;
 
-    var start = {x: params.radius_base / -10, y: params.radius_base / 20};
+    var start = {x: params.radius_base / -7, y: params.radius_base / 20};
     var segment = [start, start];
     // skipping every other coord gives it a rounder shape (see, pit)
-    for (var v = 2; v < outside.length / 2; v+=2) {
-        var sx = outside[v].x * shrink;
+    for (var v = 1; v < Math.ceil(outside.length / 2); v+=2) {
+        var local_shrink_x = v == 1 || v == Math.round(outside.length / 2) - 1 ? shrink * 0.9 : shrink;
+        var local_shrink_y = v == 1 || v == Math.round(outside.length / 2) - 1 ? shrink * 0.8 : shrink;
+        var sx = outside[v].x * local_shrink_x;
         sx = sx > -5 ? -10 : sx;
-        var sy = outside[v].y * shrink;
+        var sy = outside[v].y * local_shrink_y;
         segment.push({x: sx, y: sy});
     }
     var stroke_color = color(hue(fill_colors[0]), saturation(fill_colors[0]), lightness(fill_colors[0]) * 0.8);
@@ -20,7 +22,7 @@ function get_segments(outside, params, fill_colors) {
     var shading = [start, start];
     shrink = 0.6;
     // starburst shape for the dark color
-    for (v = 2; v < outside.length / 2 - 1; v++) {
+    for (v = 1; v < Math.floor(outside.length / 2) - 1; v++) {
         var sx = outside[v].x * shrink;
         sx = sx > -5 ? -10 : sx;
         var sy = outside[v].y * shrink;
@@ -51,6 +53,7 @@ function get_segments(outside, params, fill_colors) {
 
     mirror.stroke = stroke_color;
     mirror.fill = fill_colors[0];
+
     return [segment, shading, mirror, shading_mirror];
 }
 
