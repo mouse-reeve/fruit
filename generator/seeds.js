@@ -85,10 +85,14 @@ function get_pit(base_shape, fill_color) {
     for (var v = 1; v < base_shape.length; v+=2) {
         var sx, sy;
         if (v < 2 || v >= base_shape.length - 2) {
-            // the top points and bottom of the pit (ie, the first and middlemost
-            // points) keep the original x coords
+            // make the top kinda pointy
             sx = base_shape[v].x;
             sy = base_shape[v].y * pit_size;
+        } else if (v == Math.round(base_shape.length / 2) - 1) {
+            // some bottom pointy (only happens half the time, when there's a point at the very bottom)
+            sx = base_shape[v].x;
+            sy = base_shape[v].y * 0.5;
+            pit.push({x: sx - 5, y: sy - 5});
         } else {
             // otherwise we just scale things down, especially on the y axis
             sx = base_shape[v].x * pit_size;
@@ -98,6 +102,7 @@ function get_pit(base_shape, fill_color) {
         // for the faux 3D effect on the inside cut face
         sx = v < base_shape.length / 2 || v >= base_shape.length - 2 ? sx : sx * 0.9;
         pit.push({x: sx, y: sy});
+
     }
 
     pit.stroke = color(hue(fill_color), saturation(fill_color), 25);
