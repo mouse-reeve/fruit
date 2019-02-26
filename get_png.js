@@ -13,6 +13,9 @@ var puppeteer = require('puppeteer');
     var description = await page.$eval('#description', node => node.innerText);
     console.log(description);
 
+    var fact = await page.$eval('#fact', node => node.innerText);
+    console.log(fact);
+
     await browser.close();
 })();
 

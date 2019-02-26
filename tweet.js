@@ -10,12 +10,14 @@ var client = new twitter({
 });
 
 var data = fs.readFileSync('fruit.png');
-var text = fs.readFileSync('text', 'utf8');
+var text = fs.readFileSync('text', 'utf8').split('\n');
+var description = text[0];
+var fact = text[1];
 
 client.post('media/upload', {media: data}, function (error, media, response) {
     if (!error) {
         var status = {
-            status: text,
+            status: description,
             media_ids: media.media_id_string // Pass the media id string
         };
 
@@ -23,6 +25,11 @@ client.post('media/upload', {media: data}, function (error, media, response) {
             if (error) {
                 console.log(error);
             }
+            var followup = {
+                status: fact,
+                in_reply_to_status_id: tweet.id,
+            };
+            client.post('statuses/update', followup);
         });
 
     } else {

@@ -9,8 +9,14 @@ var client = new mastodon({
     api_url: 'https://botsin.space/api/v1/',
 });
 
-var text = fs.readFileSync('text', 'utf8');
-client.post('media', {file: fs.createReadStream('fruit.png')}).then(resp => {
+var text = fs.readFileSync('text', 'utf8').split('\n');
+var description = text[0];
+var fact = text[1];
+
+client.post('media', {file: fs.createreadstream('fruit.png')}).then(resp => {
     id = resp.data.id;
-    client.post('statuses', {status: text, media_ids: [id]});
+    client.post('statuses', {status: description, media_ids: [id]}).then(main_post => {
+        client.post('statuses', {status: fact, in_reply_to_id: main_post.data.id});
+    });
 });
+
