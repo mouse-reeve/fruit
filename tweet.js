@@ -26,10 +26,14 @@ client.post('media/upload', {media: data}, function (error, media, response) {
                 console.log(error);
             }
             var followup = {
-                status: fact,
+                status: '@new_facts ' + fact,
                 in_reply_to_status_id: tweet.id,
             };
-            client.post('statuses/update', followup);
+            client.post('statuses/update', followup, function(error, tweet, response) {
+                if (error) {
+                    console.log(error);
+                }
+            });
         });
 
     } else {
