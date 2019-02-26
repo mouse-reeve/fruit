@@ -110,13 +110,22 @@ function get_pit(base_shape, params, fill_color) {
     pit.fill = fill_color;
 
     if (!pointy) {
-        return pit;
+        var highlight = [];
+        start = 1;
+        end = Math.ceil(pit.length / 3);
+        for (v = start; v <= end; v++) {
+            highlight.push({x: pit[v].x * 0.8, y: pit[v].y * 0.8});
+        }
+        for (v = end; v > start; v--) {
+            highlight.push({x: pit[v].x * 0.6, y: pit[v].y * 0.6});
+        }
+        highlight.fill = color(100, 100, 100, 30);
+        return [pit, highlight];
     }
 
     // shadows for pointy pits
     var shadows = [];
-    console.log(params);
-    var offset = params.min_radius / 20;
+    var offset = params.min_radius / 25;
     var distance = Math.ceil(pit.length * 0.55) - Math.ceil(pit.length / 5);
 
     var shadow = [];
