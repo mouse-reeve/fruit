@@ -80,9 +80,9 @@ function create_fruit() {
 
     var core_colors = [
         color(
-            add_hue(hue(flesh_color), random(-5, 5)),
+            add_hue(hue(flesh_color), random([-1, 1]) * random(1, 7)),
             saturation(flesh_color),
-            lightness(flesh_color) - random(9, 18),
+            lightness(flesh_color) - random(-8, 18),
             100
         )
     ];

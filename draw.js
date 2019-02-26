@@ -7,6 +7,7 @@ var white;
 var paper_origin;
 var paper_height;
 var paper_width;
+var seed;
 
 function setup() {
     var param_string = window.location.search.substr(1).split('&');
@@ -19,7 +20,7 @@ function setup() {
         }
         params[pair[0]] = pair[1];
     }
-    var seed = params.seed || Math.floor(Math.random() * 10000);
+    seed = params.seed || Math.floor(Math.random() * 10000);
     randomSeed(seed);
     history.replaceState({}, '', 'index.html?seed=' + seed);
 
@@ -183,6 +184,13 @@ function draw() {
     textSize(15);
     fill(color('#8D7553'));
     textFont(artist[2]);
+
+    // seed
+    text(
+        '#' + seed,
+        paper_origin.x + 55,
+        paper_origin.y + paper_height - 65
+    );
 
     // fruit name
     text(
