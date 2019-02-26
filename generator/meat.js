@@ -4,12 +4,12 @@ function get_segments(outside, params, fill_colors) {
     // citrus style, or big seeds? could be either
     var shrink = 0.85;
 
-    var start = {x: params.radius_base / -7, y: params.radius_base / 20};
+    var start = {x: params.radius_base / -6, y: params.radius_base / 20};
     var segment = [start, start];
     // skipping every other coord gives it a rounder shape (see, pit)
-    for (var v = 1; v < Math.ceil(outside.length / 2); v+=2) {
-        var local_shrink_x = v == 1 || v == Math.round(outside.length / 2) - 1 ? shrink * 0.9 : shrink;
-        var local_shrink_y = v == 1 || v == Math.round(outside.length / 2) - 1 ? shrink * 0.8 : shrink;
+    for (var v = 1; v < Math.ceil(outside.length / 2) + 1; v += 2) {
+        var local_shrink_x = v == 1 || v == Math.round(outside.length / 2) ? shrink * 0.9 : shrink;
+        var local_shrink_y = v == 1 || v == Math.round(outside.length / 2) ? shrink * 0.8 : shrink;
         var sx = outside[v].x * local_shrink_x;
         sx = sx > -5 ? -10 : sx;
         var sy = outside[v].y * local_shrink_y;

@@ -1,6 +1,10 @@
 function get_hue(min, max) {
-    var base_hue = Math.round(random(min, max)); // magenta through green
-    return base_hue % 100;
+    var base_hue = Math.round(random(min, max));
+    base_hue = base_hue % 100;
+    if (base_hue < 0) {
+        return 100 + base_hue;
+    }
+    return base_hue;
 }
 
 function add_hue(hue, delta) {
