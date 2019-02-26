@@ -63,7 +63,7 @@ function create_fruit() {
 
     // --- palette
     var skin_color = color(
-        get_hue(-10, 40),
+        get_hue(-5, 40),
         random(55, 100),
         random(10, 80),
         100
@@ -115,7 +115,7 @@ function create_fruit() {
         core = get_core(outside, params, core_colors);
         center = [core, segments];
     } else if (pit_type == 'pit') {
-        var pit = get_pit(outside, pit_color);
+        var pit = get_pit(outside, params, pit_color);
         center.push(pit);
     } else {
         var seeds = get_seeds(base_shape, params, pit_color);

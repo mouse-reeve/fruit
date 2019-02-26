@@ -78,10 +78,11 @@ function get_seeds(outside, params, fill_color) {
     return seeds;
 }
 
-function get_pit(base_shape, fill_color) {
+function get_pit(base_shape, params, fill_color) {
     // like in an apricot or cherry, depending on which coords it skips
     var pit_size = random(0.3, 0.5);
     var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
+    var pointy = false;
     for (var v = 1; v < base_shape.length; v+=2) {
         var sx, sy;
         if (v < 2 || v >= base_shape.length - 2) {
@@ -90,6 +91,7 @@ function get_pit(base_shape, fill_color) {
             sy = base_shape[v].y * pit_size;
         } else if (v == Math.round(base_shape.length / 2) - 1) {
             // some bottom pointy (only happens half the time, when there's a point at the very bottom)
+            pointy = true;
             sx = base_shape[v].x;
             sy = base_shape[v].y * 0.5;
             pit.push({x: sx - 5, y: sy - 5});
@@ -102,11 +104,52 @@ function get_pit(base_shape, fill_color) {
         // for the faux 3D effect on the inside cut face
         sx = v < base_shape.length / 2 || v >= base_shape.length - 2 ? sx : sx * 0.9;
         pit.push({x: sx, y: sy});
-
     }
 
     pit.stroke = color(hue(fill_color), saturation(fill_color), 25);
     pit.fill = fill_color;
+
+    if (!pointy) {
+        return pit;
+    }
+
+    // shadows for pointy pits
+    var shadows = [];
+    console.log(params);
+    var offset = params.min_radius / 20;
+    var distance = Math.ceil(pit.length * 0.55) - Math.ceil(pit.length / 5);
+
+    var shadow = [];
+    var end = pit.length - 2;
+    var start = Math.ceil(pit.length / 2);
+    var shrink = 0.4;
+    for (v = start; v <= end; v++) {
+        shadow.push({x: pit[v].x * shrink + offset, y: pit[v].y * shrink});
+    }
+    shrink -= 0.08;
+    for (v = end; v > start; v--) {
+        shadow.push({x: pit[v].x * shrink + offset, y: pit[v].y * shrink});
+    }
+    shadow.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    shadows.push(shadow);
+
+    for (var i = 0; i < 3; i++) {
+        shadow = [];
+        start = Math.abs(Math.ceil(pit.length / 5) - i);
+        end = start + distance;
+        shrink = 0.8 - (i / 5);
+        for (v = start; v <= end; v++) {
+            shadow.push({x: pit[v].x * shrink + offset, y: pit[v].y * shrink});
+        }
+        shrink -= 0.08;
+        for (v = end; v > start; v--) {
+            shadow.push({x: pit[v].x * shrink + offset, y: pit[v].y * shrink});
+        }
+        shadow.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+        shadows.push(shadow);
+    }
+
+    pit = [pit].concat(shadows);
     return pit;
 }
 
