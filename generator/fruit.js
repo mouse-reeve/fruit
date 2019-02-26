@@ -5,8 +5,8 @@ function create_fruit() {
     var radius_base = random(50, 110);
     var radius_y = radius_base;
     var radius_x = radius_base;
-    var perturbation_y = radius_base / 10;
-    var perturbation_x = radius_base / 7;
+    var perturbation_y = radius_base / 9;
+    var perturbation_x = radius_base / 6;
     var point_count = Math.round(random(6, 8));
     var angle = PI / point_count;
 
@@ -96,11 +96,17 @@ function create_fruit() {
     );
 
     var pit_color = color(10, 65, random(30, 60));
-    var pit_type = random([
-        'pit', 'pit', 'pit',
-        'seed', 'seed', 'seed',
-        'segments',
-    ]);
+
+    var pit_type;
+    if (params.divot_offset > 0.07) {
+        pit_type = random(['pit', 'seed']);
+    } else {
+        pit_type = random([
+            'pit', 'pit', 'pit',
+            'seed', 'seed', 'seed',
+            'segments',
+        ]);
+    }
     var core = get_core(outside, params, core_colors);
     var center = [core];
     if (min_radius < radius_base / 5) {

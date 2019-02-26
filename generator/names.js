@@ -170,7 +170,6 @@ function get_name(radius, pit) {
         name = random(pieces.descriptor) + ' ' + name;
     }
 
-    console.log(pit, radius);
     if (pit == 'seed' && radius < 50 && random() > 0.3) {
         name += 'berry';
     }
