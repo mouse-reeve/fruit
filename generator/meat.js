@@ -13,7 +13,8 @@ function get_segments(outside, params, fill_colors) {
         var sy = outside[v].y * shrink;
         segment.push({x: sx, y: sy});
     }
-    segment.stroke = color(hue(fill_colors[0]), saturation(fill_colors[0]), 25);
+    var stroke_color = color(hue(fill_colors[0]), saturation(fill_colors[0]), lightness(fill_colors[0]) * 0.8);
+    segment.stroke = stroke_color;
     segment.fill = fill_colors[0];
 
     var shading = [start, start];
@@ -48,7 +49,7 @@ function get_segments(outside, params, fill_colors) {
     });
     shading_mirror.fill = fill_colors[1];
 
-    mirror.stroke = color(hue(fill_colors[0]), saturation(fill_colors[0]), 25);
+    mirror.stroke = stroke_color;
     mirror.fill = fill_colors[0];
     return [segment, shading, mirror, shading_mirror];
 }
@@ -70,7 +71,7 @@ function get_inside(outside, params, fill_color) {
 
     inside = inside.slice(0, -2);
 
-    inside.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    inside.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.4);
     inside.fill = fill_color;
     return inside;
 }
