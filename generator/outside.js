@@ -37,6 +37,7 @@ function get_stem(inside, params, fill_color) {
     var stem_length = 35 + 0.9 * (100 - params.radius_base);
     var stem_width = random(0.02, 0.04) * params.radius_y;
     var curve = (150 / (100 - stem_length));
+    curve = curve > 10 ? 10 : curve;
 
     // cool let's just enumerate every point, this is fine
     var stem = [

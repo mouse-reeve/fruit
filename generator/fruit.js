@@ -2,7 +2,7 @@ function create_fruit() {
     var x = 0;
     var y = 0;
 
-    var radius_base = random(50, 110);
+    var radius_base = random(30, 110);
     var radius_y = radius_base;
     var radius_x = radius_base;
     var perturbation_y = radius_base / 9;

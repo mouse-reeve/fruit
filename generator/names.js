@@ -155,6 +155,7 @@ var pieces = {
         'ron',
         'ry',
         'te',
+        'to',
         'tron',
         'ula',
         'wi',
