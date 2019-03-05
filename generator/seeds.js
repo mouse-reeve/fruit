@@ -106,7 +106,8 @@ function get_pit(base_shape, params, fill_color) {
         pit.push({x: sx, y: sy});
     }
 
-    pit.stroke = adjust_lightness(fill_color, 0.8);
+    pit.stroke = adjust_lightness(fill_color, 0.7);
+    pit.strokeWeight = 2.5;
     pit.fill = fill_color;
 
     if (!pointy) {

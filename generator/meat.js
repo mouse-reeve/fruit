@@ -75,6 +75,7 @@ function get_inside(outside, params, fill_color) {
     inside = inside.slice(0, -2);
 
     inside.stroke = outside.stroke;
+    inside.strokeWeight = 2;
     inside.fill = fill_color;
     return inside;
 }
