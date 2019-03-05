@@ -76,7 +76,6 @@ function create_fruit() {
     );
     var outside = get_outside(base_shape, params, skin_color);
     var inside = get_inside(outside, params, flesh_color);
-    var stem = get_stem(inside, params, color(10, 65, 40));
 
     var core_colors = [
         color(
@@ -96,6 +95,7 @@ function create_fruit() {
     );
 
     var pit_color = color(10, 65, random(30, 60));
+    var stem = get_stem(inside, params, pit_color);
 
     var pit_type;
     if (params.divot_offset > 0.07) {

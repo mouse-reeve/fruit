@@ -1,7 +1,7 @@
 // for the branchy layout
 function get_branch(params, fill_color) {
     // __________
-    // \____ ____\
+    // \_ __ __ _\
     //   \\ \\ \\
     //  (  (  (   )
     //    v  v  v
@@ -36,8 +36,69 @@ function get_branch(params, fill_color) {
     reversed.reverse();
     branch = branch.concat(reversed);
 
-    branch.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    branch.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
     branch.fill = fill_color;
-    return branch;
+
+    var cut = [
+        start, start,
+        {x: branch.slice(-1)[0].x - (branch_width / 2), y: branch.slice(-1)[0].y + (branch_width / 4)},
+        branch.slice(-1)[0],
+        {x: branch.slice(-1)[0].x + (branch_width / 4), y: branch.slice(-1)[0].y + (branch_width / 2)},
+    ];
+    cut.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 1.4);
+    cut.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+
+    // highlight
+    var midline = [start, start];
+    for (var j = 2; j < branch.length; j++) {
+        var y_offset = branch_width * 0.4 * (j <= Math.round(branch.length / 2) ? -1 : 1);
+        if (j == Math.round(branch.length / 2))  {
+            y_offset = 0;
+        }
+        var x_offset = j == Math.round(branch.length / 2) ? -5 : 0;
+        var mid_x = (branch[j - 1].x + branch[j].x) / 2;
+        var mid_y = (branch[j - 1].y + branch[j].y) / 2;
+        if (j != Math.round(branch.length / 2) && j != Math.round(branch.length / 2) + 1) {
+            midline.push({x: mid_x + x_offset, y: (mid_y + y_offset) * random(0.99, 1.01)});
+        }
+        midline.push({x: branch[j].x + x_offset, y: branch[j].y + y_offset});
+    }
+    midline.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+
+    return [branch, midline, cut];
+}
+
+function get_stem(inside, params, fill_color) {
+    var origin = inside[0];
+    var stem_length = 35 + 0.9 * (100 - params.radius_base);
+    var stem_width = random(0.02, 0.04) * params.radius_y;
+    var curve = (150 / (100 - stem_length));
+    curve = curve > 10 ? 10 : curve;
+
+    // cool let's just enumerate every point, this is fine
+    var stem = [
+        // bottom
+        {x: origin.x - (stem_width / 2), y: origin.y},
+        {x: origin.x - (stem_width / 2), y: origin.y},
+        // curve
+        {x: origin.x - (stem_width + (0.8 * curve)), y: origin.y - (stem_length * 0.65)},
+        // top
+        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length},
+        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
+        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
+        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length},
+        // curve
+        {x: origin.x + (stem_width - (0.9 * curve)), y: origin.y - (stem_length * 0.65)},
+        // bottom
+        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
+        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
+    ];
+
+    stem.fill = fill_color;
+    stem.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    stem.strokeWeight = 3;
+    return stem;
 }
 

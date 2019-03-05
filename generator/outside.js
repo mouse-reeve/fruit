@@ -31,38 +31,3 @@ function get_highlight(shape) {
 
     return highlight;
 }
-
-function get_stem(inside, params, fill_color) {
-    var origin = inside[0];
-    var stem_length = 35 + 0.9 * (100 - params.radius_base);
-    var stem_width = random(0.02, 0.04) * params.radius_y;
-    var curve = (150 / (100 - stem_length));
-    curve = curve > 10 ? 10 : curve;
-
-    // cool let's just enumerate every point, this is fine
-    var stem = [
-        // bottom
-        {x: origin.x - (stem_width / 2), y: origin.y},
-        {x: origin.x - (stem_width / 2), y: origin.y},
-        // curve
-        {x: origin.x - (stem_width + (0.8 * curve)), y: origin.y - (stem_length * 0.65)},
-        // top
-        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length},
-        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
-        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
-        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
-        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
-        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length},
-        // curve
-        {x: origin.x + (stem_width - (0.9 * curve)), y: origin.y - (stem_length * 0.65)},
-        // bottom
-        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
-        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
-    ];
-
-    stem.fill = fill_color;
-    stem.stroke = color(hue(fill_color), saturation(fill_color), 25);
-    stem.strokeWeight = 3;
-    return stem;
-}
-
