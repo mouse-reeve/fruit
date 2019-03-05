@@ -9,7 +9,7 @@ function get_outside(base_shape, params, fill_color) {
         outside[params.top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (params.radius_y * params.divot_offset)};
     }
 
-    outside.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    outside.stroke = adjust_lightness(fill_color, 0.5);
     outside.fill = fill_color;
     return outside;
 }

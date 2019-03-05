@@ -15,7 +15,7 @@ function get_segments(outside, params, fill_colors) {
         var sy = outside[v].y * local_shrink_y;
         segment.push({x: sx, y: sy});
     }
-    var stroke_color = color(hue(fill_colors[0]), saturation(fill_colors[0]), lightness(fill_colors[0]) * 0.8);
+    var stroke_color = adjust_lightness(fill_colors[0], 0.8);
     segment.stroke = stroke_color;
     segment.fill = fill_colors[0];
 
@@ -74,7 +74,7 @@ function get_inside(outside, params, fill_color) {
 
     inside = inside.slice(0, -2);
 
-    inside.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.4);
+    inside.stroke = outside.stroke;
     inside.fill = fill_color;
     return inside;
 }

@@ -36,7 +36,7 @@ function get_branch(params, fill_color) {
     reversed.reverse();
     branch = branch.concat(reversed);
 
-    branch.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    branch.stroke = adjust_lightness(fill_color, 0.8);
     branch.fill = fill_color;
 
     var cut = [
@@ -45,8 +45,8 @@ function get_branch(params, fill_color) {
         branch.slice(-1)[0],
         {x: branch.slice(-1)[0].x + (branch_width / 4), y: branch.slice(-1)[0].y + (branch_width / 2)},
     ];
-    cut.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 1.4);
-    cut.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    cut.fill = adjust_lightness(fill_color, 1.4);
+    cut.stroke = adjust_lightness(fill_color, 0.8);
 
     // highlight
     var midline = [start, start];
@@ -63,7 +63,7 @@ function get_branch(params, fill_color) {
         }
         midline.push({x: branch[j].x + x_offset, y: branch[j].y + y_offset});
     }
-    midline.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    midline.fill = adjust_lightness(fill_color, 0.8);
 
     return [branch, midline, cut];
 }
@@ -97,7 +97,7 @@ function get_stem(inside, params, fill_color) {
     ];
 
     stem.fill = fill_color;
-    stem.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    stem.stroke = adjust_lightness(fill_color, 0.8);
     stem.strokeWeight = 3;
     return stem;
 }

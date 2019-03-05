@@ -19,7 +19,7 @@ function get_big_seeds(outside, params, fill_color) {
     seed.push(start, start);
 
     seed.fill = fill_color;
-    seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    seed.stroke = adjust_lightness(fill_color, 0.8);
     seed.strokeWeight = 2;
 
     var mirror = seed.map(function (point) {
@@ -71,7 +71,7 @@ function get_seeds(outside, params, fill_color) {
         seed.push({x: (dist + radius) * cos(theta + (PI / 12)), y: (dist + radius) * sin(theta + (PI / 12))});
 
         seed.fill = fill_color;
-        seed.stroke = color(hue(fill_color), saturation(fill_color), 25);
+        seed.stroke = adjust_lightness(fill_color, 0.8);
         seed.strokeWeight = 2;
         seeds.push(seed);
     }
@@ -106,7 +106,7 @@ function get_pit(base_shape, params, fill_color) {
         pit.push({x: sx, y: sy});
     }
 
-    pit.stroke = color(hue(fill_color), saturation(fill_color), 25);
+    pit.stroke = adjust_lightness(fill_color, 0.8);
     pit.fill = fill_color;
 
     if (!pointy) {
@@ -139,7 +139,7 @@ function get_pit(base_shape, params, fill_color) {
     for (v = end; v > start; v--) {
         shadow.push({x: pit[v].x * shrink + offset, y: pit[v].y * shrink});
     }
-    shadow.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+    shadow.fill = adjust_lightness(fill_color, 0.8);
     shadows.push(shadow);
 
     for (var i = 0; i < 3; i++) {
@@ -154,7 +154,7 @@ function get_pit(base_shape, params, fill_color) {
         for (v = end; v > start; v--) {
             shadow.push({x: pit[v].x * shrink + offset, y: pit[v].y * shrink});
         }
-        shadow.fill = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.8);
+        shadow.fill = adjust_lightness(fill_color, 0.8);
         shadows.push(shadow);
     }
 

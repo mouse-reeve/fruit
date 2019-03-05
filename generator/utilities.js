@@ -11,6 +11,14 @@ function add_hue(hue, delta) {
     return (hue + delta) % 100;
 }
 
+function adjust_lightness(base_color, ratio) {
+    return color(
+        hue(base_color),
+        saturation(base_color),
+        lightness(base_color) * ratio
+    );
+}
+
 function get_corner_angle(p1, p2, p3) {
     /*      p1
     /       /|
