@@ -12,10 +12,14 @@ function add_hue(hue, delta) {
 }
 
 function adjust_lightness(base_color, ratio) {
+    var new_lightness = lightness(base_color) * ratio;
+    if (new_lightness >= 100) {
+        new_lightness = 95;
+    }
     return color(
         hue(base_color),
         saturation(base_color),
-        lightness(base_color) * ratio
+        new_lightness
     );
 }
 
