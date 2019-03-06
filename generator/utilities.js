@@ -8,7 +8,11 @@ function get_hue(min, max) {
 }
 
 function add_hue(hue, delta) {
-    return (hue + delta) % 100;
+    var new_hue = (hue + delta) % 100;
+    if (new_hue < 0) {
+        return 100 + new_hue;
+    }
+    return new_hue;
 }
 
 function adjust_lightness(base_color, ratio) {

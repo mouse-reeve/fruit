@@ -18,7 +18,7 @@ function get_crosswise(outside, params, fill_color) {
     }
     outer.splice(0, 0, outer[0]);
     outer.fill = fill_color;
-    outer.stroke = color(hue(fill_color), saturation(fill_color), lightness(fill_color) * 0.4);
+    outer.stroke = adjust_lightness(fill_color, 0.4);
 
     var skin = outer.map(function(point, idx) {
         var x_shift = idx > outer.length * 0.25 && idx < outer.length * 0.75 ? 1.13 : 1;
