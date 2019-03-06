@@ -91,15 +91,15 @@ function create_fruit() {
         pit_type = random(['pit', 'seed']);
     } else {
         pit_type = random([
-            'pit', 'pit', 'pit',
-            'seed', 'seed', 'seed',
+            'pit',
+            'seed',
             'segments',
         ]);
     }
 
     var core_colors = [
         color(
-            add_hue(hue(flesh_color), random(-10, 5)),
+            add_hue(hue(flesh_color), random([-2, 1]) * random(2, 5)),
             saturation(flesh_color),
             lightness(flesh_color) - random(-8, 18),
             100
@@ -139,9 +139,12 @@ function create_fruit() {
 
     // alternative cut
     var cross_colors = [flesh_color];
-    cross_colors = cross_colors.concat(core_colors);
-    var crosswise = get_crosswise(outside, params, cross_colors);
-    crosswise = [crosswise, get_cross_seeds(crosswise[1], pit_color)];
+    var crosswise = get_crosswise(outside, params, flesh_color);
+    if (pit_type == 'seed') {
+        crosswise = [crosswise, get_cross_seeds(crosswise[1], core_colors, pit_color)];
+    } else if (pit_type == 'segments') {
+        crosswise = [crosswise, get_cross_segments(crosswise[1], core_colors)];
+    }
 
     // wrap the whole thing up
     outside = [outside, get_highlight(outside)];

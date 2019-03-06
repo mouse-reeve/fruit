@@ -80,7 +80,29 @@ function draw() {
     var fruit = create_fruit();
 
     // crosswise is a horizontal slice, cut is a vertical slice
-    var cut = random([fruit.crosswise, fruit.cut]);
+    var cut = random([
+        fruit.crosswise,
+        fruit.cut,
+        fruit.cut,
+        fruit.cut,
+        fruit.cut,
+        fruit.cut,
+        fruit.cut,
+    ]);
+    if (fruit.pit_type == 'pit') {
+        // don't do a crosswise cut on a pitted fruit
+        cut = fruit.cut;
+    } else if (fruit.pit_type == 'segments') {
+        // right now cross cuts work much better for segmented fruit
+        cut = random([
+            fruit.crosswise,
+            fruit.crosswise,
+            fruit.crosswise,
+            fruit.crosswise,
+            fruit.crosswise,
+            fruit.cut
+        ]);
+    }
     if (fruit.radius_base >= 50 && random() > 0.9) {
         //  ___________
         // |  _______  |
@@ -124,7 +146,7 @@ function draw() {
         translate(200, bottom);
         draw_from_data(cut);
         pop();
-    } else if (fruit.ave_radius > 80 && random() > 0.8) {
+    } else if (fruit.ave_radius > 80 && random() > 0.7) {
         //  ___________
         // |           |
         // |           |
