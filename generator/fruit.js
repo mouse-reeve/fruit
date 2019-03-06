@@ -101,7 +101,7 @@ function create_fruit() {
         color(
             add_hue(hue(flesh_color), random([-2, 1]) * random(2, 5)),
             saturation(flesh_color),
-            lightness(flesh_color) - random(-8, 18),
+            lightness(flesh_color) * random(0.8, 1.2),
             100
         )
     ];
@@ -109,7 +109,7 @@ function create_fruit() {
         color(
             hue(core_colors[0]),
             saturation(core_colors[0]),
-            lightness(core_colors[0]) - 7,
+            lightness(core_colors[0]) * 0.9,
             100
         )
     );
