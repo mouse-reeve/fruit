@@ -79,6 +79,8 @@ function setup() {
 function draw() {
     var fruit = create_fruit();
 
+    // crosswise is a horizontal slice, cut is a vertical slice
+    var cut = random([fruit.crosswise, fruit.cut]);
     if (fruit.radius_base >= 50 && random() > 0.9) {
         //  ___________
         // |  _______  |
@@ -120,7 +122,7 @@ function draw() {
 
         var bottom = fruit.radius_base > 60 ? paper_height - fruit.radius_base * 2 : 510;
         translate(200, bottom);
-        draw_from_data(fruit.cut);
+        draw_from_data(cut);
         pop();
     } else if (fruit.ave_radius > 80 && random() > 0.8) {
         //  ___________
@@ -140,7 +142,7 @@ function draw() {
         push();
         translate(paper_origin.x + 300, paper_origin.y + (paper_height * 0.4) + (fruit.radius_base));
         rotate(PI/5);
-        draw_from_data(fruit.cut);
+        draw_from_data(cut);
         pop();
     } else {
         //  ___________
@@ -159,7 +161,7 @@ function draw() {
 
         push();
         translate(paper_origin.x + 250, paper_origin.y + 490);
-        draw_from_data(fruit.cut);
+        draw_from_data(cut);
         pop();
     }
 

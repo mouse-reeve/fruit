@@ -17,6 +17,7 @@ function create_fruit() {
     base_shape.push(start);
     base_shape.push(start);
     var min_radius;
+    var max_radius_x;
     var ave_radius = 0;
     var rad_count = 0;
     // create the first side
@@ -26,6 +27,9 @@ function create_fruit() {
         // keep track of the minimum radius to decide if seeds will fit
         if (!min_radius || radius_x < min_radius) {
             min_radius = radius_x;
+        }
+        if (!max_radius_x || radius_x > max_radius_x) {
+            max_radius_x = radius_x;
         }
         radius_y += Math.round(random(-1 * perturbation_y, perturbation_y));
         radius_y = radius_y < 0 ? perturbation_y : radius_y;
@@ -59,6 +63,7 @@ function create_fruit() {
         ave_radius: ave_radius,
         top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
         min_radius: min_radius,
+        max_radius: max_radius_x,
     };
 
     // --- palette
@@ -69,30 +74,14 @@ function create_fruit() {
         100
     );
     var flesh_color = color(
-        get_hue(0, 15),
+        get_hue(5, 15),
         random(90, 100),
         random(50, 95),
         100
     );
     var outside = get_outside(base_shape, params, skin_color);
-    var inside = get_inside(outside, params, flesh_color);
 
-    var core_colors = [
-        color(
-            add_hue(hue(flesh_color), random(-1, -5)),
-            saturation(flesh_color),
-            lightness(flesh_color) - random(8, 18),
-            100
-        )
-    ];
-    core_colors.push(
-        color(
-            hue(core_colors[0]),
-            saturation(core_colors[0]),
-            lightness(core_colors[0]) - 7,
-            100
-        )
-    );
+    var inside = get_inside(outside, params, flesh_color);
 
     var pit_color = color(10, 65, random(30, 60));
     var stem = get_stem(inside, params, pit_color);
@@ -107,6 +96,23 @@ function create_fruit() {
             'segments',
         ]);
     }
+
+    var core_colors = [
+        color(
+            add_hue(hue(flesh_color), random(-10, 5)),
+            saturation(flesh_color),
+            lightness(flesh_color) - random(-8, 18),
+            100
+        )
+    ];
+    core_colors.push(
+        color(
+            hue(core_colors[0]),
+            saturation(core_colors[0]),
+            lightness(core_colors[0]) - 7,
+            100
+        )
+    );
     var core = get_core(outside, params, core_colors);
     var center = [core];
     if (min_radius < radius_base / 5) {
@@ -131,11 +137,19 @@ function create_fruit() {
 
     var branch = get_branch(params, pit_color);
 
+    // alternative cut
+    var cross_colors = [flesh_color];
+    cross_colors = cross_colors.concat(core_colors);
+    var crosswise = get_crosswise(outside, params, cross_colors);
+    crosswise = [crosswise, get_cross_seeds(crosswise[1], pit_color)];
+
+    // wrap the whole thing up
     outside = [outside, get_highlight(outside)];
     var fruit = {
         branch: branch,
         whole: [stem, outside],
         cut: [outside, stem, inside, center],
+        crosswise: crosswise,
     };
 
     var tip = stem[4];
