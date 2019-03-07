@@ -86,7 +86,6 @@ function get_cross_segments(crosswise, fill_colors) {
     // the - 0.01 bti stops if from duplicating a segment, not sure why
     for (var theta = PI; theta < 3 * PI - 0.01; theta += gap) {
         var local_radius = get_distance(crosswise[current_segment], {x: 0, y: 0}) * radius_ratio;
-        console.log(local_radius);
         current_segment += Math.floor(crosswise.length / segment_count);
         var local_inset = inset_radius;
         var local_angle = angle;
