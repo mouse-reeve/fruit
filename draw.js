@@ -1,4 +1,3 @@
-var data = {};
 
 // actual drawing
 var black;
@@ -103,7 +102,7 @@ function draw() {
             fruit.cut
         ]);
     }
-    if (fruit.radius_base >= 50 && random() > 0.9) {
+    if (true) {//fruit.radius_base >= 50 && random() > 0.9) {
         //  ___________
         // |  _______  |
         // |    7  7   |
@@ -115,6 +114,13 @@ function draw() {
         // |___________|
         push();
         translate(paper_origin.x, paper_origin.y);
+
+        push();
+        translate(fruit.branch[0][2].x, fruit.branch[0][2].y - 2);
+        rotate(TWO_PI / -3.5);
+        draw_from_data(fruit.leaf);
+        pop();
+
         draw_from_data(fruit.branch);
 
         // draw more fruits on stem

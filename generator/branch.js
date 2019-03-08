@@ -102,3 +102,67 @@ function get_stem(inside, params, fill_color) {
     return stem;
 }
 
+function get_leaf(params) {
+    var len = params.radius_y > 60 ? params.radius_y : 60;
+    len *= random(0.7, 1.1);
+    // leaf stem
+    var stem = [];
+    var stem_length = 20;
+    stem.push({x: 0, y: 0});
+    stem.push({x: 0, y: 0});
+    var stem_origin = {
+        x: 0, y: stem_length
+    };
+    stem.push({
+        x: stem_origin.x + 2, y: stem_origin.y
+    });
+    stem.push({
+        x: stem_origin.x + 2, y: stem_origin.y
+    });
+    stem.push({x: stem_origin.x - 2, y: stem_origin.y});
+    stem.push({x: stem_origin.x - 2, y: stem_origin.y});
+    stem.fill = black;
+
+    var leaf = [stem_origin, stem_origin];
+    // an even number
+    var point_count = 2 * Math.round(random(2, 2));
+    var radii = [];
+    for (var i = 0; i <= point_count / 2; i++) {
+        var rad = i > 0 ? radii[i - 1] : len;
+        radii.push(rad * random(1, 1.3));
+    }
+    var mirror = radii.slice(0, -1);
+    mirror.reverse();
+    radii = radii.concat(mirror);
+
+    var divot = random([0.6, random(0.6, 1)]);
+
+    var arc_length = random(PI * 0.2, PI * 1.9);
+    var gap = arc_length / point_count;
+    var arc_start = 3 * HALF_PI + (TWO_PI - arc_length) / 2;
+    var leaf_side = [];
+    var c = 0;
+    var leaf_origin = {
+        x: stem_origin.x,
+        y: stem_origin.y + (len * random([0.5, random(0, 0.5)]))
+    };
+    for (var a = arc_start; a < arc_start + arc_length + 0.1; a += gap) {
+        if (c > 0) {
+            // pointy leafs mode
+            var local_rad = (radii[c] + radii[c - 1]) / 2;
+            leaf.push({
+                x: leaf_origin.x + (local_rad  * divot * cos(a - gap / 2)),
+                y: leaf_origin.y + (local_rad * divot * sin(a - gap / 2))
+            });
+        }
+        leaf.push({
+            x: leaf_origin.x + (radii[c] * cos(a)),
+            y: leaf_origin.y + (radii[c] * sin(a))
+        });
+        c += 1;
+    }
+    leaf.fill = color(random(15, 20), random(20, 30), random(50, 60), 100);
+    leaf.stroke = adjust_lightness(leaf.fill, 0.4);
+
+    return [stem, leaf];
+}

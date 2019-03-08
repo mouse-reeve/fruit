@@ -141,6 +141,7 @@ function create_fruit() {
     outside = [outside, get_highlight(outside)];
     var fruit = {
         branch: branch,
+        leaf: get_leaf(params),
         whole: [stem, outside],
         cut: [outside, stem, inside, center],
         crosswise: crosswise,
