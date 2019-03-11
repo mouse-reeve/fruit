@@ -1848,6 +1848,7 @@ var counties = [
     "West Carroll",
     "West Feliciana",
     "Westchester",
+    "Wester",
     "Western District",
     "Westmoreland",
     "Weston",

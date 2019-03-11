@@ -102,7 +102,7 @@ function draw() {
             fruit.cut
         ]);
     }
-    if (fruit.radius_base >= 50 && random() > 0.9) {
+    if (fruit.radius_base >= 50 && random() > 0.8) {
         //  ___________
         // |  _______  |
         // |    7  7   |

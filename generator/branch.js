@@ -103,7 +103,7 @@ function get_stem(inside, params, fill_color) {
 }
 
 function get_leaf(params, branch_color, leaf_color) {
-    var len = random(50, 80);
+    var len = random(60, 80);
     len *= random(1.7, 2.1);
 
     // ----- leaf stem
@@ -120,13 +120,13 @@ function get_leaf(params, branch_color, leaf_color) {
 
     // ----- leaf!!!!
     var leaf = [stem_end, stem_end];
-    var leaf_points = Math.round(random(1, 5));
+    var leaf_points = Math.round(random(2, 6));
     var vein_gap = len / (leaf_points + 1);
     var divot = random([1, random(0.5, 1)]);
 
     var veins = [stem_end, stem_end];
     var vein_length = random(len / 6, len * 0.6);
-    var angle = 0;//PI * 1.5;
+    var angle = random(0, PI * 0.2);
     var angle_gap = ((PI * 0.2) - angle) / leaf_points;
     for (var i = 0; i < leaf_points; i++) {
         angle += angle_gap;
