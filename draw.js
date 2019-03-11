@@ -115,12 +115,6 @@ function draw() {
         push();
         translate(paper_origin.x, paper_origin.y);
 
-        push();
-        translate(fruit.branch[0][2].x, fruit.branch[0][2].y - 2);
-        rotate(TWO_PI / -3.5);
-        draw_from_data(fruit.leaf);
-        pop();
-
         draw_from_data(fruit.branch);
 
         // draw more fruits on stem
@@ -147,6 +141,13 @@ function draw() {
             draw_from_data([modified_stem, fruit.whole[1]]);
             pop();
         }
+        push();
+        var connetion = fruit.branch[0].slice(-2)[0];
+        translate(connetion.x, connetion.y);
+        rotate(TWO_PI / -3.5);
+        draw_from_data(fruit.leaf);
+        pop();
+
 
         var bottom = fruit.radius_base > 60 ? paper_height - fruit.radius_base * 2 : 510;
         translate(200, bottom);

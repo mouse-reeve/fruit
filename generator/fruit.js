@@ -137,11 +137,17 @@ function create_fruit() {
         crosswise = [crosswise, get_cross_segments(crosswise[1], core_colors)];
     }
 
+    var leaf_color = color(
+        random(15, 45),
+        random(5, 30),
+        random(60, 70),
+        100
+    );
     // wrap the whole thing up
     outside = [outside, get_highlight(outside)];
     var fruit = {
         branch: branch,
-        leaf: get_leaf(params),
+        leaf: get_leaf(params, pit_color, leaf_color),
         whole: [stem, outside],
         cut: [outside, stem, inside, center],
         crosswise: crosswise,

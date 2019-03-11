@@ -102,67 +102,79 @@ function get_stem(inside, params, fill_color) {
     return stem;
 }
 
-function get_leaf(params) {
-    var len = params.radius_y > 60 ? params.radius_y : 60;
-    len *= random(0.7, 1.1);
-    // leaf stem
-    var stem = [];
-    var stem_length = 20;
-    stem.push({x: 0, y: 0});
-    stem.push({x: 0, y: 0});
-    var stem_origin = {
+function get_leaf(params, branch_color, leaf_color) {
+    var len = random(50, 80);
+    len *= random(1.7, 2.1);
+
+    // ----- leaf stem
+    var stem_length = 10;
+    var stem_end = {
         x: 0, y: stem_length
     };
-    stem.push({
-        x: stem_origin.x + 2, y: stem_origin.y
-    });
-    stem.push({
-        x: stem_origin.x + 2, y: stem_origin.y
-    });
-    stem.push({x: stem_origin.x - 2, y: stem_origin.y});
-    stem.push({x: stem_origin.x - 2, y: stem_origin.y});
-    stem.fill = black;
+    var stem = [
+        {x: 0, y: 0}, {x: 0, y: 0},
+        {x: stem_end.x + 2, y: stem_end.y},
+        {x: stem_end.x - 2, y: stem_end.y},
+    ];
+    stem.fill = branch_color;
 
-    var leaf = [stem_origin, stem_origin];
-    // an even number
-    var point_count = 2 * Math.round(random(2, 2));
-    var radii = [];
-    for (var i = 0; i <= point_count / 2; i++) {
-        var rad = i > 0 ? radii[i - 1] : len;
-        radii.push(rad * random(1, 1.3));
-    }
-    var mirror = radii.slice(0, -1);
-    mirror.reverse();
-    radii = radii.concat(mirror);
+    // ----- leaf!!!!
+    var leaf = [stem_end, stem_end];
+    var leaf_points = Math.round(random(1, 5));
+    var vein_gap = len / (leaf_points + 1);
+    var divot = random([1, random(0.5, 1)]);
 
-    var divot = random([0.6, random(0.6, 1)]);
-
-    var arc_length = random(PI * 0.2, PI * 1.9);
-    var gap = arc_length / point_count;
-    var arc_start = 3 * HALF_PI + (TWO_PI - arc_length) / 2;
-    var leaf_side = [];
-    var c = 0;
-    var leaf_origin = {
-        x: stem_origin.x,
-        y: stem_origin.y + (len * random([0.5, random(0, 0.5)]))
-    };
-    for (var a = arc_start; a < arc_start + arc_length + 0.1; a += gap) {
-        if (c > 0) {
-            // pointy leafs mode
-            var local_rad = (radii[c] + radii[c - 1]) / 2;
-            leaf.push({
-                x: leaf_origin.x + (local_rad  * divot * cos(a - gap / 2)),
-                y: leaf_origin.y + (local_rad * divot * sin(a - gap / 2))
-            });
+    var veins = [stem_end, stem_end];
+    var vein_length = random(len / 6, len * 0.6);
+    var angle = 0;//PI * 1.5;
+    var angle_gap = ((PI * 0.2) - angle) / leaf_points;
+    for (var i = 0; i < leaf_points; i++) {
+        angle += angle_gap;
+        vein_length += (i < leaf_points / 2 ? 1 : -1) * random(4, 10);
+        var y_center = stem_end.y + (vein_gap * (i + 1));
+        var x_position = vein_length * cos(angle);
+        var y_position = y_center + (vein_length * sin(angle));
+        // leaf edge point
+        if (i > 0 && divot != 1) {
+            var divot_x = ((x_position + leaf[leaf.length - 1].x) / 2) * divot;
+            var divot_y = (y_position + leaf[leaf.length - 1].y) * 0.45;
+            leaf.push({x: divot_x, y: divot_y});
         }
-        leaf.push({
-            x: leaf_origin.x + (radii[c] * cos(a)),
-            y: leaf_origin.y + (radii[c] * sin(a))
-        });
-        c += 1;
-    }
-    leaf.fill = color(random(15, 20), random(20, 30), random(50, 60), 100);
-    leaf.stroke = adjust_lightness(leaf.fill, 0.4);
+        leaf.push({x: x_position, y: y_position});
+        // divot point
 
-    return [stem, leaf];
+        // at the center vein
+        veins.push({x: 3, y: y_center});
+        veins.push({x: 3, y: y_center});
+        // tip of the vein
+        veins.push({x: x_position * 0.9, y: y_position});
+        // back to the center vein
+        veins.push({x: 3, y: y_center + 6});
+        veins.push({x: 3, y: y_center + 6});
+    }
+    var end_y = leaf[leaf.length - 1].y + vein_gap;
+    // tippy most tip
+    leaf.push({x: stem_end.x, y: end_y});
+    veins.push({x: stem_end.x, y: end_y * 0.9});
+    var leaf_mirror = leaf.slice(1, -1).map(function (point, idx) {
+        return {
+            x: -1 * point.x / 2,
+            y: point.y
+        };
+    });
+    leaf_mirror.reverse();
+    leaf = leaf.concat(leaf_mirror);
+    leaf.stroke = adjust_lightness(leaf_color, 0.7);
+    leaf.fill = leaf_color;
+
+    var vein_mirror = veins.slice(1).map(function (point) {
+        return {
+            x: -1 * point.x / 2,
+            y: point.y
+        };
+    });
+    vein_mirror.reverse();
+    veins = veins.concat(vein_mirror);
+    veins.fill = adjust_lightness(leaf_color, 0.8);
+    return [stem, leaf, veins];
 }
