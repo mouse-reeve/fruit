@@ -142,15 +142,6 @@ function draw() {
             pop();
         }
 
-        // draw leaf now
-        push();
-        var connection = fruit.branch[0].slice(-2)[0];
-        translate(connection.x, connection.y);
-        rotate(TWO_PI / -3.5);
-        draw_from_data(fruit.leaf);
-        pop();
-
-
         var bottom = fruit.radius_base > 60 ? paper_height - fruit.radius_base * 2 : 510;
         translate(200, bottom);
         draw_from_data(cut);
