@@ -121,7 +121,7 @@ function draw() {
         for (var i = 3; i < fruit.branch[0].length / 2 - 1; i++) {
             push();
 
-            // deepy copy stem coords
+            // deep copy stem coords
             var modified_stem = fruit.whole[0].map(function(point) {
                 return Object.assign({}, point);
             });
@@ -134,10 +134,11 @@ function draw() {
                 modified_stem[j].y -= jitter * sin(PI / 7);
             }
 
+            var stem_end_index = Math.floor(modified_stem.length / 2);
             var theta = (Math.round(fruit.branch[0].length / 4) - i) * PI / 9;
             translate(fruit.branch[0][i].x, fruit.branch[0][i].y - 3);
             rotate(theta);
-            translate(0 - modified_stem[7].x, 0 - modified_stem[7].y);
+            translate(0 - modified_stem[stem_end_index].x, 0 - modified_stem[stem_end_index].y);
             draw_from_data([modified_stem, fruit.whole[1]]);
             pop();
         }
