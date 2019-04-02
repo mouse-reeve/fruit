@@ -103,7 +103,7 @@ function get_stem(inside, params, fill_color) {
 }
 
 function get_leaf(params, branch_color, leaf_color) {
-    var len = random(60, 80);
+    var len = random(70, 90);
     len *= random(1.7, 2.1);
 
     // ----- leaf stem

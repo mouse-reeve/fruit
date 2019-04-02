@@ -141,9 +141,11 @@ function draw() {
             draw_from_data([modified_stem, fruit.whole[1]]);
             pop();
         }
+
+        // draw leaf now
         push();
-        var connetion = fruit.branch[0].slice(-2)[0];
-        translate(connetion.x, connetion.y);
+        var connection = fruit.branch[0].slice(-2)[0];
+        translate(connection.x, connection.y);
         rotate(TWO_PI / -3.5);
         draw_from_data(fruit.leaf);
         pop();
