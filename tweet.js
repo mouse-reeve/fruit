@@ -25,6 +25,11 @@ client.post('media/upload', {media: data}, function (error, media, response) {
             if (error) {
                 console.log(error);
             }
+
+            // only post fun facts every so often
+            if (Math.random() > 0.2) {
+                return;
+            }
             var followup = {
                 status: '@new_facts ' + fact,
                 in_reply_to_status_id: tweet.id_str,
