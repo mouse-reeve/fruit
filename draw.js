@@ -86,7 +86,12 @@ function draw() {
         var fruit = get_actual_fruit(spec);
         translate(paper_width / 2, 200);
         draw_from_data(fruit.outside);
-        translate(0, 300);
+
+        translate(-100, 150);
+        var fruit_2 = get_actual_fruit(spec);
+        draw_from_data(fruit_2.outside);
+
+        translate(100, 150);
         draw_from_data(fruit.cut);
     } else if (fruit.radius_base >= 50 && random() > 0.8) {
         //  ___________

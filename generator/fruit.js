@@ -47,10 +47,6 @@ function get_spec_fruit() {
             y: point.y,
         };
     });
-    for (var i = 3; i < reversed.length; i++) {
-        var jitter = random(radius_base / -30, radius_base / 30);
-        reversed[i] = {x: reversed[i].x + jitter, y: reversed[i].y + jitter};
-    }
     reversed.reverse();
     base_shape = base_shape.concat(reversed.slice(1));
 
@@ -123,5 +119,17 @@ var get_actual_fruit = function (spec) {
         cut: [outside, inside, cut, stem],
     };
 }
+
+var make_irregular = function(vertices, jitter) {
+    return vertices.map(function (point, idx) {
+        if (idx < 2 || idx > vertices.length - 3) {
+            return {x: point.x, y: point.y};
+        }
+        return {
+            x: point.x + random(-1 * jitter, jitter),
+            y: point.y + random(-1 * jitter, jitter),
+        };
+    });
+};
 
 // cool

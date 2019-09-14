@@ -10,6 +10,10 @@ function get_outside(spec) {
         outside[spec.top_points[i]] = {x: spec.base_shape[0].x, y: spec.base_shape[0].y + (spec.radius_y * spec.divot_offset)};
     }
 
+    // irregularity
+    var jitter = spec.ave_radius / 30;
+    outside = make_irregular(outside, jitter);
+
     outside.stroke = adjust_lightness(fill_color, 0.5);
     outside.fill = fill_color;
     return outside;
