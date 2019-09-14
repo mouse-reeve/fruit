@@ -1,12 +1,13 @@
 // The fruit, whole and uncut
 
-function get_outside(base_shape, params, fill_color) {
+function get_outside(spec) {
     // basically just the base shape with a dip maybe and colors
-    var outside = base_shape.slice(0);
+    var outside = spec.base_shape.slice(0);
+    var fill_color = spec.colors.skin;
 
     // add top dip
-    for (var i = 0; i < params.top_points.length; i++) {
-        outside[params.top_points[i]] = {x: base_shape[0].x, y: base_shape[0].y + (params.radius_y * params.divot_offset)};
+    for (var i = 0; i < spec.top_points.length; i++) {
+        outside[spec.top_points[i]] = {x: spec.base_shape[0].x, y: spec.base_shape[0].y + (spec.radius_y * spec.divot_offset)};
     }
 
     outside.stroke = adjust_lightness(fill_color, 0.5);

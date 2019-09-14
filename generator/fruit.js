@@ -1,10 +1,8 @@
-function create_fruit() {
-    var x = 0;
-    var y = 0;
+function get_spec_fruit() {
+    var x = y = 0;
 
     var radius_base = random(30, 110);
-    var radius_y = radius_base;
-    var radius_x = radius_base;
+    var radius_y = radius_x = radius_base;
     var perturbation_y = radius_base / 9;
     var perturbation_x = radius_base / 6;
     var point_count = Math.round(random(6, 8));
@@ -56,16 +54,6 @@ function create_fruit() {
     reversed.reverse();
     base_shape = base_shape.concat(reversed.slice(1));
 
-    var params = {
-        divot_offset: random(0, 0.2),
-        radius_base: radius_base,
-        radius_y: radius_y,
-        ave_radius: ave_radius,
-        top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
-        min_radius: min_radius,
-        max_radius: max_radius_x,
-    };
-
     // --- palette
     var skin_color = color(
         get_hue(-5, 40),
@@ -79,15 +67,13 @@ function create_fruit() {
         random(50, 95),
         100
     );
-    var outside = get_outside(base_shape, params, skin_color);
-
-    var inside = get_inside(outside, params, flesh_color);
-
-    var pit_color = color(10, 65, random(30, 60));
-    var stem = get_stem(inside, params, pit_color);
 
     var pit_type;
-    if (params.divot_offset > 0.07) {
+    var divot_offset = random(0, 0.2);
+    if (min_radius < radius_base / 5) {
+        pit_type = 'pit';
+    }
+    else if (divot_offset > 0.07) {
         pit_type = random(['pit', 'seed']);
     } else {
         pit_type = random([
@@ -96,7 +82,6 @@ function create_fruit() {
             'segments',
         ]);
     }
-
     var core_colors = [
         adjust_lightness(color(
             add_hue(hue(flesh_color), random([-2, 1]) * random(2, 5)),
@@ -107,51 +92,36 @@ function create_fruit() {
     ];
     core_colors.push(adjust_lightness(core_colors[0], 0.9));
 
-    var core = get_core(outside, params, core_colors);
-    var center = [core];
-    if (min_radius < radius_base / 5) {
-        pit_type = 'pit';
-    }
-
-    if (pit_type == 'segments') {
-        var segments = get_segments(outside, params, core_colors);
-        core = get_core(outside, params, core_colors);
-        center = [core, segments];
-    } else if (pit_type == 'pit') {
-        var pit = get_pit(outside, params, pit_color);
-        center.push(pit);
-    } else {
-        var seeds = get_seeds(base_shape, params, pit_color);
-        var big_seeds = get_big_seeds(outside, params, pit_color);
-        center.push(random([seeds, big_seeds]));
-    }
-
-    var branch = get_branch(params, pit_color);
-
-    // alternative cut
-    var cross_colors = [flesh_color];
-    var crosswise = get_crosswise(outside, params, flesh_color);
-    if (pit_type == 'seed') {
-        crosswise = [crosswise, get_cross_seeds(crosswise[1], core_colors, pit_color)];
-    } else if (pit_type == 'segments') {
-        crosswise = [crosswise, get_cross_segments(crosswise[1], core_colors)];
-    }
-
-    // wrap the whole thing up
-    outside = [outside, get_highlight(outside)];
-    var fruit = {
-        branch: branch,
-        whole: [stem, outside],
-        cut: [outside, stem, inside, center],
-        crosswise: crosswise,
+    var pit_color = color(10, 65, random(30, 60));
+    return {
+        base_shape: base_shape,
+        divot_offset: divot_offset,
+        radius_base: radius_base,
+        radius_y: radius_y,
+        ave_radius: ave_radius,
+        top_points: [0, 1, base_shape.length - 2, base_shape.length - 1],
+        min_radius: min_radius,
+        max_radius: max_radius_x,
+        colors: {
+            skin: skin_color,
+            flesh: flesh_color,
+            core: core_colors,
+            pit: pit_color,
+        },
+        pit_type: pit_type,
     };
+}
 
-    var tip = stem[4];
-    fruit.tip = tip;
-    fruit.radius_base = radius_base;
-    fruit.ave_radius = ave_radius;
-    fruit.pit_type = pit_type;
-    return fruit;
+var get_actual_fruit = function (spec) {
+    var outside = get_outside(spec);
+    var highlight = get_highlight(outside);
+    var inside = get_inside(outside, spec, spec.colors.flesh);
+    var cut = get_cut(outside, spec);
+    var stem = get_stem(inside, spec, spec.colors.pit);
+    return {
+        outside: [stem, outside, highlight],
+        cut: [outside, inside, cut, stem],
+    };
 }
 
 // cool

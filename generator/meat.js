@@ -1,4 +1,44 @@
-// MEEEAAAAAT or maybe FLEEEESSSSHHH
+function get_cut(outside, params) {
+    var core = get_core(outside, params, params.colors.core);
+    var center = [core];
+    
+    if (params.pit_type == 'segments') {
+        var segments = get_segments(outside, params, params.colors.core);
+        center.push(segments);
+    } else if (params.pit_type == 'pit') {
+        var pit = get_pit(outside, params, params.colors.pit);
+        center.push(pit);
+    } else {
+        var seeds = get_seeds(outside, params, params.colors.pit);
+        var big_seeds = get_big_seeds(outside, params, params.colors.pit);
+        center.push(random([seeds, big_seeds]));
+    }
+    return center;
+}
+
+function get_inside(outside, params, fill_color) {
+    // flesh
+    var inside = [];
+    for (var v = 0; v < outside.length; v++) {
+        var sx = v < outside.length / 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * 0.9;
+        inside.push({x: sx, y: outside[v].y});
+    }
+
+    // add inside top dip
+    var divot_offset = params.divot_offset * 1.5;
+    for (var i = 0; i < params.top_points.length; i++) {
+        var top_point = params.top_points[i];
+        inside[top_point] = {x: outside[top_point].x, y: outside[top_point].y + (params.radius_y * divot_offset)};
+    }
+
+    inside = inside.slice(0, -2);
+
+    inside.stroke = outside.stroke;
+    inside.strokeWeight = 2;
+    inside.fill = fill_color;
+    return inside;
+}
+
 
 function get_segments(outside, params, fill_colors) {
     // citrus style, or big seeds? could be either
@@ -55,29 +95,6 @@ function get_segments(outside, params, fill_colors) {
     mirror.fill = fill_colors[0];
 
     return [segment, shading, mirror, shading_mirror];
-}
-
-function get_inside(outside, params, fill_color) {
-    // flesh
-    var inside = [];
-    for (var v = 0; v < outside.length; v++) {
-        var sx = v < outside.length / 2 || v >= outside.length - 2 ? outside[v].x : outside[v].x * 0.9;
-        inside.push({x: sx, y: outside[v].y});
-    }
-
-    // add inside top dip
-    var divot_offset = params.divot_offset * 1.5;
-    for (var i = 0; i < params.top_points.length; i++) {
-        var top_point = params.top_points[i];
-        inside[top_point] = {x: outside[top_point].x, y: outside[top_point].y + (params.radius_y * divot_offset)};
-    }
-
-    inside = inside.slice(0, -2);
-
-    inside.stroke = outside.stroke;
-    inside.strokeWeight = 2;
-    inside.fill = fill_color;
-    return inside;
 }
 
 function get_core(outside, params, fill_color) {

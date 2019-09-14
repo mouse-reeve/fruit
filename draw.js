@@ -76,33 +76,19 @@ function setup() {
 }
 
 function draw() {
-    var fruit = create_fruit();
+    push();
+    translate(paper_origin.x, paper_origin.y);
 
-    // crosswise is a horizontal slice, cut is a vertical slice
-    var cut = random([
-        fruit.crosswise,
-        fruit.cut,
-        fruit.cut,
-        fruit.cut,
-        fruit.cut,
-        fruit.cut,
-        fruit.cut,
-    ]);
-    if (fruit.pit_type == 'pit') {
-        // don't do a crosswise cut on a pitted fruit
-        cut = fruit.cut;
-    } else if (fruit.pit_type == 'segments') {
-        // right now cross cuts work much better for segmented fruit
-        cut = random([
-            fruit.crosswise,
-            fruit.crosswise,
-            fruit.crosswise,
-            fruit.crosswise,
-            fruit.crosswise,
-            fruit.cut
-        ]);
-    }
-    if (fruit.radius_base >= 50 && random() > 0.8) {
+    // the general parameters of the fruit
+    var spec = get_spec_fruit();
+    if (true) {
+        // the actual fruit
+        var fruit = get_actual_fruit(spec);
+        translate(paper_width / 2, 200);
+        draw_from_data(fruit.outside);
+        translate(0, 300);
+        draw_from_data(fruit.cut);
+    } else if (fruit.radius_base >= 50 && random() > 0.8) {
         //  ___________
         // |  _______  |
         // |    7  7   |
@@ -254,36 +240,36 @@ function draw() {
     document.getElementById('description').innerText = name + ', by ' + artist[0] + ', ' + year;
 
     // fun fact followup
-    var fact = fruit_fact(name, fruit);
-    document.getElementById('fact').innerText = fact;
+    //var fact = fruit_fact(name, fruit);
+    //document.getElementById('fact').innerText = fact;
 }
 
-function draw_from_data(fruit) {
-    if (Array.isArray(fruit[0])) {
-        for (var f = 0; f < fruit.length; f++) {
-            draw_from_data(fruit[f]);
+function draw_from_data(data) {
+    if (Array.isArray(data[0])) {
+        for (var f = 0; f < data.length; f++) {
+            draw_from_data(data[f]);
         }
         return;
     }
 
     push();
-    if (!fruit.stroke) {
+    if (!data.stroke) {
         noStroke();
     } else {
-        stroke(fruit.stroke);
-        if (fruit.strokeWeight) {
-            strokeWeight(fruit.strokeWeight);
+        stroke(data.stroke);
+        if (data.strokeWeight) {
+            strokeWeight(data.strokeWeight);
         } else {
             strokeWeight(3);
         }
     }
-    if (!!fruit.fill) {
-        fill(fruit.fill);
+    if (!!data.fill) {
+        fill(data.fill);
     }
 
     beginShape();
-    for (var v = 0; v < fruit.length; v++) {
-        curveVertex(fruit[v].x, fruit[v].y);
+    for (var v = 0; v < data.length; v++) {
+        curveVertex(data[v].x, data[v].y);
     }
     endShape(CLOSE);
 
