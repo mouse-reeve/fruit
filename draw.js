@@ -76,24 +76,10 @@ function setup() {
 }
 
 function draw() {
-    push();
-    translate(paper_origin.x, paper_origin.y);
 
     // the general parameters of the fruit
     var spec = get_spec_fruit();
-    if (true) {
-        // the actual fruit
-        var fruit = get_actual_fruit(spec);
-        translate(paper_width / 2, 200);
-        draw_from_data(fruit.outside);
-
-        translate(-100, 150);
-        var fruit_2 = get_actual_fruit(spec);
-        draw_from_data(fruit_2.outside);
-
-        translate(100, 150);
-        draw_from_data(fruit.cut);
-    } else if (fruit.radius_base >= 50 && random() > 0.8) {
+    if (spec.radius_base >= 50) {// && random() > 0.8) {
         //  ___________
         // |  _______  |
         // |    7  7   |
@@ -106,39 +92,52 @@ function draw() {
         push();
         translate(paper_origin.x, paper_origin.y);
 
-        draw_from_data(fruit.branch);
+        var branch = get_branch(spec);
+        draw_from_data(branch);
+
 
         // draw more fruits on stem
-        for (var i = 3; i < fruit.branch[0].length / 2 - 1; i++) {
+        var fruit;
+        var fruit_max = (branch[0].length / 2) - 1;
+        for (var i = 3; i < fruit_max; i++) {
             push();
-
-            // deep copy stem coords
-            var modified_stem = fruit.whole[0].map(function(point) {
-                return Object.assign({}, point);
-            });
-            modified_stem.fill = fruit.whole[0].fill;
-            modified_stem.stroke = fruit.whole[0].stroke;
-
-            var jitter = fruit.branch[0].length / 2 > 5 ? random(-5, 35) : 0;
-            for (var j = 3; j <= 8; j++) {
-                modified_stem[j].x += jitter * cos(PI / 7);
-                modified_stem[j].y -= jitter * sin(PI / 7);
-            }
-
-            var stem_end_index = Math.floor(modified_stem.length / 2);
-            var theta = (Math.round(fruit.branch[0].length / 4) - i) * PI / 9;
-            translate(fruit.branch[0][i].x, fruit.branch[0][i].y - 3);
+            var stem_start = branch[0][i];
+            var stem_end =  {
+                x: branch[0][i].x + (9 * (i - ((fruit_max + 3) / 2))) + random(-10, 10),
+                y: branch[0][i].y + random(spec.radius_base * 0.7, spec.radius_base * 1)
+            };
+            var stem = get_connecting_stem(
+                stem_start,
+                stem_end,
+                spec,
+            );
+            draw_from_data(stem);
+            push();
+            fruit = get_actual_fruit(spec, true);
+            var theta = HALF_PI + atan2((stem_start.y - stem_end.y), (stem_start.x - stem_end.x));
+            translate(
+                stem_end.x - fruit.inside[0].x,
+                stem_end.y - fruit.inside[0].y,
+            );
             rotate(theta);
-            translate(0 - modified_stem[stem_end_index].x, 0 - modified_stem[stem_end_index].y);
-            draw_from_data([modified_stem, fruit.whole[1]]);
+            // re-set the stem with the fruit
+            var dist = fruit.inside[0].y * sin(theta) / sin((PI - theta) / 2)
+            translate(
+                dist * cos(theta),
+                dist * sin(theta)
+            );
+            draw_from_data(fruit.cut);
+            pop();
+
             pop();
         }
 
         var bottom = fruit.radius_base > 60 ? paper_height - fruit.radius_base * 2 : 510;
         translate(200, bottom);
-        draw_from_data(cut);
+        var fruit = get_actual_fruit(spec);
+        draw_from_data(fruit.cut);
         pop();
-    } else if (fruit.ave_radius > 80 && random() > 0.7) {
+    } else if (spec.ave_radius > 80 && random() > 0.7) {
         //  ___________
         // |           |
         // |           |
@@ -150,13 +149,14 @@ function draw() {
         // |___________|
         push();
         translate(paper_origin.x + 200, paper_origin.y + (paper_height * 0.4));
-        draw_from_data(fruit.whole);
+        var fruit = get_actual_fruit(spec);
+        draw_from_data(fruit.outside);
         pop();
 
         push();
         translate(paper_origin.x + 300, paper_origin.y + (paper_height * 0.4) + (fruit.radius_base));
         rotate(PI/5);
-        draw_from_data(cut);
+        draw_from_data(fruit.cut);
         pop();
     } else {
         //  ___________
@@ -170,12 +170,13 @@ function draw() {
         // |___________|
         push();
         translate(paper_origin.x + 250, paper_origin.y + 200);
-        draw_from_data(fruit.whole);
+        var fruit = get_actual_fruit(spec);
+        draw_from_data(fruit.outside);
         pop();
 
         push();
         translate(paper_origin.x + 250, paper_origin.y + 490);
-        draw_from_data(cut);
+        draw_from_data(fruit.cut);
         pop();
     }
 

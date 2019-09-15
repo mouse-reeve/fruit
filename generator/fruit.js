@@ -1,7 +1,7 @@
 function get_spec_fruit() {
     var x = y = 0;
 
-    var radius_base = random(30, 110);
+    var radius_base = 80;//random(30, 110);
     var radius_y = radius_x = radius_base;
     var perturbation_y = radius_base / 9;
     var perturbation_x = radius_base / 6;
@@ -89,6 +89,7 @@ function get_spec_fruit() {
     core_colors.push(adjust_lightness(core_colors[0], 0.9));
 
     var pit_color = color(10, 65, random(30, 60));
+    var stem_width = random(0.02, 0.04) * radius_y;
     return {
         base_shape: base_shape,
         divot_offset: divot_offset,
@@ -105,18 +106,26 @@ function get_spec_fruit() {
             pit: pit_color,
         },
         pit_type: pit_type,
+        stem_width: stem_width,
     };
 }
 
-var get_actual_fruit = function (spec) {
+var get_actual_fruit = function (spec, hide_stem) {
     var outside = get_outside(spec);
     var highlight = get_highlight(outside);
     var inside = get_inside(outside, spec, spec.colors.flesh);
     var cut = get_cut(outside, spec);
-    var stem = get_stem(inside, spec, spec.colors.pit);
+    if (!hide_stem) {
+        var stem = get_stem(inside, spec, spec.colors.pit);
+        return {
+            outside: [stem, outside, highlight],
+            cut: [outside, inside, cut, stem],
+        };
+    }
     return {
-        outside: [stem, outside, highlight],
-        cut: [outside, inside, cut, stem],
+        outside: [outside, highlight],
+        inside: inside,
+        cut: [outside, inside, cut],
     };
 }
 

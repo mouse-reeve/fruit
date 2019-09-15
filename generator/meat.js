@@ -1,22 +1,22 @@
-function get_cut(outside, params) {
-    var core = get_core(outside, params, params.colors.core);
+function get_cut(outside, spec) {
+    var core = get_core(outside, spec, spec.colors.core);
     var center = [core];
     
-    if (params.pit_type == 'segments') {
-        var segments = get_segments(outside, params, params.colors.core);
+    if (spec.pit_type == 'segments') {
+        var segments = get_segments(outside, spec, spec.colors.core);
         center.push(segments);
-    } else if (params.pit_type == 'pit') {
-        var pit = get_pit(outside, params, params.colors.pit);
+    } else if (spec.pit_type == 'pit') {
+        var pit = get_pit(outside, spec, spec.colors.pit);
         center.push(pit);
     } else {
-        var seeds = get_seeds(outside, params, params.colors.pit);
-        var big_seeds = get_big_seeds(outside, params, params.colors.pit);
+        var seeds = get_seeds(outside, spec, spec.colors.pit);
+        var big_seeds = get_big_seeds(outside, spec, spec.colors.pit);
         center.push(random([seeds, big_seeds]));
     }
     return center;
 }
 
-function get_inside(outside, params, fill_color) {
+function get_inside(outside, spec, fill_color) {
     // flesh
     var inside = [];
     for (var v = 0; v < outside.length; v++) {
@@ -25,10 +25,10 @@ function get_inside(outside, params, fill_color) {
     }
 
     // add inside top dip
-    var divot_offset = params.divot_offset * 1.5;
-    for (var i = 0; i < params.top_points.length; i++) {
-        var top_point = params.top_points[i];
-        inside[top_point] = {x: outside[top_point].x, y: outside[top_point].y + (params.radius_y * divot_offset)};
+    var divot_offset = spec.divot_offset * 1.5;
+    for (var i = 0; i < spec.top_points.length; i++) {
+        var top_point = spec.top_points[i];
+        inside[top_point] = {x: outside[top_point].x, y: outside[top_point].y + (spec.radius_y * divot_offset)};
     }
 
     inside = inside.slice(0, -2);
@@ -40,11 +40,11 @@ function get_inside(outside, params, fill_color) {
 }
 
 
-function get_segments(outside, params, fill_colors) {
+function get_segments(outside, spec, fill_colors) {
     // citrus style, or big seeds? could be either
     var shrink = 0.85;
 
-    var start = {x: params.radius_base / -6, y: params.radius_base / 20};
+    var start = {x: spec.radius_base / -6, y: spec.radius_base / 20};
     var segment = [start, start];
     // skipping every other coord gives it a rounder shape (see, pit)
     for (var v = 1; v < Math.ceil(outside.length / 2) + 1; v += 2) {
@@ -97,7 +97,7 @@ function get_segments(outside, params, fill_colors) {
     return [segment, shading, mirror, shading_mirror];
 }
 
-function get_core(outside, params, fill_color) {
+function get_core(outside, spec, fill_color) {
     // darker colors on the inside to give it a sense of core
     var cores = [[], []];
     var core_size = 0.7;
@@ -108,9 +108,9 @@ function get_core(outside, params, fill_color) {
         cores[0].push({x: sx, y: sy});
     }
 
-    var divot_offset = params.divot_offset * 2.2;
-    for (var i = 0; i < params.top_points.length; i++) {
-        cores[0][params.top_points[i]] = {x: outside[0].x, y: outside[0].y + (params.radius_y * divot_offset)};
+    var divot_offset = spec.divot_offset * 2.2;
+    for (var i = 0; i < spec.top_points.length; i++) {
+        cores[0][spec.top_points[i]] = {x: outside[0].x, y: outside[0].y + (spec.radius_y * divot_offset)};
     }
 
     cores[0].fill = fill_color[0];
@@ -125,9 +125,9 @@ function get_core(outside, params, fill_color) {
         cores[1].push({x: cx, y: cy});
     }
 
-    divot_offset = params.divot_offset;
-    for (i = 0; i < params.top_points.length; i++) {
-        cores[1][params.top_points[i]] = {x: cores[1][0].x, y: cores[1][0].y + (params.radius_y * divot_offset)};
+    divot_offset = spec.divot_offset;
+    for (i = 0; i < spec.top_points.length; i++) {
+        cores[1][spec.top_points[i]] = {x: cores[1][0].x, y: cores[1][0].y + (spec.radius_y * divot_offset)};
     }
 
     cores[1].fill = fill_color[1];

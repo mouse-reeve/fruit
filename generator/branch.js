@@ -1,12 +1,13 @@
 // for the branchy layout
-function get_branch(params, fill_color) {
+function get_branch(spec) {
     // __________
     // \_ __ __ _\
     //   \\ \\ \\
     //  (  (  (   )
     //    v  v  v
 
-    var joints = params.ave_radius < 60 ? 8 : params.ave_radius < 80 ? 7 : 5;
+    var fill_color = spec.colors.pit;
+    var joints = spec.ave_radius < 60 ? 8 : spec.ave_radius < 80 ? 7 : 6;
     var segment_length = paper_width / (joints + 1);
     var theta = PI / 5;
 
@@ -24,7 +25,7 @@ function get_branch(params, fill_color) {
     }
 
     // thicker branches for larger fruits
-    var branch_width = Math.pow(params.radius_base, 2) / 500;
+    var branch_width = Math.pow(spec.radius_base, 2) / 300;
     var reversed = branch.slice(1).map(function(point) {
         return {x: point.x + branch_width * cos(5 * PI / 3), y: point.y + branch_width * sin(5 * PI / 3)};
     });
@@ -68,36 +69,51 @@ function get_branch(params, fill_color) {
     return [branch, midline, cut];
 }
 
-function get_stem(inside, params, fill_color) {
+function get_stem(inside, spec, fill_color) {
     var origin = inside[0];
-    var stem_length = 35 + 0.9 * (100 - params.radius_base);
-    var stem_width = random(0.02, 0.04) * params.radius_y;
+    var stem_length = 35 + 0.9 * (100 - spec.radius_base);
     var curve = (150 / (100 - stem_length));
     curve = curve > 10 ? 10 : curve;
 
     // cool let's just enumerate every point, this is fine
     var stem = [
         // bottom
-        {x: origin.x - (stem_width / 2), y: origin.y},
-        {x: origin.x - (stem_width / 2), y: origin.y},
+        {x: origin.x - (spec.stem_width / 2), y: origin.y},
+        {x: origin.x - (spec.stem_width / 2), y: origin.y},
         // curve
-        {x: origin.x - (stem_width + (0.8 * curve)), y: origin.y - (stem_length * 0.65)},
+        {x: origin.x - (spec.stem_width + (0.8 * curve)), y: origin.y - (stem_length * 0.65)},
         // top
-        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length},
-        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
-        {x: origin.x - (stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
-        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
-        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
-        {x: origin.x + (stem_width + (0.5 * curve)), y: origin.y - stem_length},
+        {x: origin.x - (spec.stem_width - (0.5 * curve)), y: origin.y - stem_length},
+        {x: origin.x - (spec.stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x - (spec.stem_width - (0.5 * curve)), y: origin.y - stem_length - 3},
+        {x: origin.x + (spec.stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
+        {x: origin.x + (spec.stem_width + (0.5 * curve)), y: origin.y - stem_length - 5},
+        {x: origin.x + (spec.stem_width + (0.5 * curve)), y: origin.y - stem_length},
         // curve
-        {x: origin.x + (stem_width - (0.9 * curve)), y: origin.y - (stem_length * 0.65)},
+        {x: origin.x + (spec.stem_width - (0.9 * curve)), y: origin.y - (stem_length * 0.65)},
         // bottom
-        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
-        {x: origin.x + (stem_width * 0.3), y: origin.y - 2},
+        {x: origin.x + (spec.stem_width * 0.3), y: origin.y - 2},
+        {x: origin.x + (spec.stem_width * 0.3), y: origin.y - 2},
     ];
 
     stem.fill = fill_color;
     stem.stroke = adjust_lightness(fill_color, 0.8);
     stem.strokeWeight = 3;
+    return stem;
+}
+
+var get_connecting_stem = function(start, end, spec) {
+    var bendy = random(-0.05, 0.05);
+    var stem = [
+        {x: start.x - (spec.stem_width / 2), y : start.y},
+        {x: start.x - (spec.stem_width / 2), y : start.y},
+        {x: start.x + (spec.stem_width / 2), y: start.y},
+        {x: (end.x + start.x) / (2 + bendy) + (spec.stem_width / 2), y: (end.y + start.y) / 2},
+        {x: end.x + 2, y: end.y - 2},
+        {x: end.x, y: end.y - 2},
+        {x: (end.x + start.x) / (2 + bendy) - (spec.stem_width / 2), y: (end.y + start.y) / 2},
+    ];
+    stem.fill = spec.colors.pit;
+    stem.stroke = adjust_lightness(spec.colors.pit, 0.8);
     return stem;
 }
