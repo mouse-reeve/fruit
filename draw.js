@@ -147,14 +147,14 @@ function draw() {
         // |    `---'  |
         // |           |
         // |___________|
+        var fruit = get_actual_fruit(spec);
         push();
         translate(paper_origin.x + 200, paper_origin.y + (paper_height * 0.4));
-        var fruit = get_actual_fruit(spec);
         draw_from_data(fruit.outside);
         pop();
 
         push();
-        translate(paper_origin.x + 300, paper_origin.y + (paper_height * 0.4) + (fruit.radius_base));
+        translate(paper_origin.x + 300, paper_origin.y + (paper_height * 0.4) + (spec.radius_base));
         rotate(PI/5);
         draw_from_data(fruit.cut);
         pop();
