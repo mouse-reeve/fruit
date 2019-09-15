@@ -1,21 +1,20 @@
 // things that could go in the middle of a fruit
 
-function get_big_seeds(outside, params, fill_color) {
+function get_big_seeds(outside, spec, fill_color) {
     // like in an apple? "big seeds" is such a weird name for this
     //
     //   /|  |\
     //  (_/  \_)
     var seed = [];
-    var scale = random(0.2, 0.3);
     // pointy seed top
-    var start = {x: outside[0].x - (params.ave_radius / 15), y: outside[0].y * scale * 0.75};
+    var start = {x: outside[0].x - (spec.ave_radius / 15), y: outside[0].y * spec.seed_scale * 0.75};
     seed.push(start, start);
 
     var halfway = Math.round(outside.length * 0.5) - 1;
-    var seed_height = params.radius_base * scale * 0.5;
+    var seed_height = spec.radius_base * spec.seed_scale * 0.5;
     // curved seed bottom points
-    seed.push({x: outside[halfway - 1].x * scale, y: seed_height});
-    seed.push({x: outside[halfway - 4].x * (scale * 0.85), y: seed_height * 0.5});
+    seed.push({x: outside[halfway - 1].x * spec.seed_scale, y: seed_height});
+    seed.push({x: outside[halfway - 4].x * (spec.seed_scale * 0.85), y: seed_height * 0.5});
     seed.push(start, start);
 
     seed.fill = fill_color;
@@ -38,13 +37,13 @@ function get_big_seeds(outside, params, fill_color) {
     return random() > 0.6 ? mirror : [seed, mirror];
 }
 
-function get_seeds(outside, params, fill_color) {
+function get_seeds(outside, spec, fill_color) {
     // radial seeds, like in a tomato
     //   ( \ / )
     // ( >     < )
     //   ( / \ )
     var seeds = [];
-    var radius = get_distance({x: 0, y: 0}, outside[3]) * random(0.05, 0.25);
+    var radius = get_distance({x: 0, y: 0}, outside[3]) * (spec.seed_scale - 0.05)
     // start adding seeds one point in to the shape array
     for (var v = 2; v < outside.length - 3; v++) {
         // skip a point in the middle so there's a gap at the bottom of the
@@ -78,9 +77,9 @@ function get_seeds(outside, params, fill_color) {
     return seeds;
 }
 
-function get_pit(base_shape, params, fill_color) {
+function get_pit(base_shape, spec, fill_color) {
     // like in an apricot or cherry, depending on which coords it skips
-    var pit_size = random(0.3, 0.5);
+    var pit_size = spec.seed_scale * 1.5;
     var pit = [{x: base_shape[0].x, y: base_shape[0].y * pit_size}];
     var pointy = false;
     for (var v = 1; v < base_shape.length; v+=2) {
@@ -126,7 +125,7 @@ function get_pit(base_shape, params, fill_color) {
 
     // shadows for pointy pits
     var shadows = [];
-    var offset = params.min_radius / 25;
+    var offset = spec.min_radius / 25;
     var distance = Math.ceil(pit.length * 0.55) - Math.ceil(pit.length / 5);
 
     var shadow = [];

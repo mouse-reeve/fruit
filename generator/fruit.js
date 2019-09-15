@@ -107,6 +107,8 @@ function get_spec_fruit() {
         },
         pit_type: pit_type,
         stem_width: stem_width,
+        seed_scale: random(0.2, 0.3),
+        seed_type: Math.round(random()),
     };
 }
 

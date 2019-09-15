@@ -9,9 +9,8 @@ function get_cut(outside, spec) {
         var pit = get_pit(outside, spec, spec.colors.pit);
         center.push(pit);
     } else {
-        var seeds = get_seeds(outside, spec, spec.colors.pit);
-        var big_seeds = get_big_seeds(outside, spec, spec.colors.pit);
-        center.push(random([seeds, big_seeds]));
+        var seeds = spec.seed_type ? get_seeds(outside, spec, spec.colors.pit) : get_big_seeds(outside, spec, spec.colors.pit);
+        center.push(seeds)
     }
     return center;
 }

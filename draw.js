@@ -79,7 +79,7 @@ function draw() {
 
     // the general parameters of the fruit
     var spec = get_spec_fruit();
-    if (spec.radius_base >= 50) {// && random() > 0.8) {
+    if (spec.radius_base >= 50 && random() > 0.8) {
         //  ___________
         // |  _______  |
         // |    7  7   |
@@ -126,7 +126,7 @@ function draw() {
                 dist * cos(theta),
                 dist * sin(theta)
             );
-            draw_from_data(fruit.cut);
+            draw_from_data(fruit.outside);
             pop();
 
             pop();
