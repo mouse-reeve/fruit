@@ -36,3 +36,45 @@ function get_highlight(shape) {
 
     return highlight;
 }
+
+function get_ridges(outside, spec) {
+    var left = outside.slice(2, Math.floor(outside.length / 2));
+    var right = outside.slice(Math.floor(outside.length / 2), -2);
+    right.reverse()
+    var ridges = [];
+    for (var i = 0.05; i <= 1; i += 0.22) {
+        var ridge = [];
+        for (var j = 0; j < left.length; j++) {
+            ridge.push({
+                x: (left[j].x * (1 - i)) + (right[j].x * i),
+                y: ((left[j].y * (1 - i)) + (right[j].y * i)) * (j > 0 ? 1 : 0.9),
+            });
+        }
+        ridge = make_irregular(ridge, spec.ave_radius / 20);
+        for (var j = ridge.length - 1; j >= 0; j--) {
+            ridge.push({
+                x: ridge[j].x - ((spec.ave_radius / 5) / (2 + (Math.abs(ridge.length - (2 * (j + 2)))))),
+                y: ridge[j].y
+            });
+        }
+        ridge.fill = adjust_lightness(spec.colors.skin, 0.7);
+        ridges.push(ridge);
+
+        if (i > 0.65) {
+            continue;
+        }
+        // small highlights
+        var y_pos = left[0].y * ((0.5 - i) ** 2);
+        var x_pos = ridge[3].x + (spec.ave_radius / 8);
+        var highlight = [
+            {x: x_pos, y: y_pos},
+            {x: x_pos - 5, y: y_pos + 10},
+            {x: x_pos, y: y_pos + 20},
+            {x: x_pos + 5 * (1 - i), y: y_pos + 10},
+        ];
+        highlight.fill = adjust_lightness(spec.colors.skin, 1.5);
+        ridges.push(highlight);
+    }
+    return ridges;
+}
+

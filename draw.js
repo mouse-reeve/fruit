@@ -76,7 +76,6 @@ function setup() {
 }
 
 function draw() {
-
     // the general parameters of the fruit
     var spec = get_spec_fruit();
     if (spec.radius_base >= 50 && random() > 0.8) {

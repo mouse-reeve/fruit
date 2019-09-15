@@ -109,23 +109,29 @@ function get_spec_fruit() {
         stem_width: stem_width,
         seed_scale: random(0.2, 0.3),
         seed_type: Math.round(random()),
+        texture: random(['ridges', 'smooth']),
     };
 }
 
 var get_actual_fruit = function (spec, hide_stem) {
     var outside = get_outside(spec);
-    var highlight = get_highlight(outside);
     var inside = get_inside(outside, spec, spec.colors.flesh);
     var cut = get_cut(outside, spec);
+    var texture;
+    if (spec.texture == 'ridges') {
+        texture = get_ridges(outside, spec)
+    } else {
+        texture = get_highlight(outside)
+    }
     if (!hide_stem) {
         var stem = get_stem(inside, spec, spec.colors.pit);
         return {
-            outside: [stem, outside, highlight],
+            outside: [stem, outside, texture],
             cut: [outside, inside, cut, stem],
         };
     }
     return {
-        outside: [outside, highlight],
+        outside: [outside, texture],
         inside: inside,
         cut: [outside, inside, cut],
     };
