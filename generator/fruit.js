@@ -1,8 +1,10 @@
 function get_spec_fruit() {
-    var x = y = 0;
+    var x = 0;
+    var y = 0;
 
-    var radius_base = 80;//random(30, 110);
-    var radius_y = radius_x = radius_base;
+    var radius_base = random(30, 110);
+    var radius_y = radius_base;
+    var radius_x = radius_base;
     var perturbation_y = radius_base / 9;
     var perturbation_x = radius_base / 6;
     var point_count = Math.round(random(6, 8));
@@ -109,7 +111,7 @@ function get_spec_fruit() {
         stem_width: stem_width,
         seed_scale: random(0.2, 0.3),
         seed_type: Math.round(random()),
-        texture: random(['ridges', 'smooth']),
+        texture: random(['ridges', 'smooth', 'smooth', 'smooth', 'smooth']),
     };
 }
 
@@ -119,9 +121,9 @@ var get_actual_fruit = function (spec, hide_stem) {
     var cut = get_cut(outside, spec);
     var texture;
     if (spec.texture == 'ridges') {
-        texture = get_ridges(outside, spec)
+        texture = get_ridges(outside, spec);
     } else {
-        texture = get_highlight(outside)
+        texture = get_highlight(outside);
     }
     if (!hide_stem) {
         var stem = get_stem(inside, spec, spec.colors.pit);
@@ -135,7 +137,7 @@ var get_actual_fruit = function (spec, hide_stem) {
         inside: inside,
         cut: [outside, inside, cut],
     };
-}
+};
 
 var make_irregular = function(vertices, jitter) {
     return vertices.map(function (point, idx) {

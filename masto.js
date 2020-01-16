@@ -16,6 +16,10 @@ var fact = text[1];
 client.post('media', {file: fs.createReadStream('fruit.png')}).then(resp => {
     id = resp.data.id;
     client.post('statuses', {status: description, media_ids: [id]}).then(main_post => {
+        // only post fun facts every so often
+        if (Math.random() > 0.2) {
+            return;
+        }
         client.post('statuses', {status: fact, in_reply_to_id: main_post.data.id});
     });
 });
