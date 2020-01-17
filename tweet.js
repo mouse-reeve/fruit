@@ -31,7 +31,7 @@ client.post('media/upload', {media: data}, function (error, media, response) {
                 return;
             }
             var followup = {
-                status: '@new_facts ' + fact,
+                status: '@new_fruits' + fact,
                 in_reply_to_status_id: tweet.id_str,
             };
             client.post('statuses/update', followup, function(error, tweet, response) {
